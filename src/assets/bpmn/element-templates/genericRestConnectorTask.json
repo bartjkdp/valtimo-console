@@ -1,0 +1,32 @@
+{
+  "name": "Generic REST Connector",
+  "id": "com.ritense.valtimo.ExternalConnectorTask",
+  "appliesTo": [
+    "bpmn:ServiceTask"
+  ],
+  "properties": [
+    {
+      "label": "Generic REST Connector Expression",
+      "type": "Hidden",
+      "value": "${genericRestConnector}",
+      "editable": false,
+      "binding": {
+        "type": "property",
+        "name": "camunda:delegateExpression"
+      }
+    },
+    {
+      "label": "Reference",
+      "description": "Reference for connector management in Valtimo Admin Console",
+      "type": "String",
+      "value": "",
+      "binding": {
+        "type": "camunda:property",
+        "name": "GenericRestConnectorReference"
+      },
+      "constraints": {
+        "not_empty":true
+      }
+    }
+  ]
+}

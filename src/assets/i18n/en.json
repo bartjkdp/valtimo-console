@@ -1,0 +1,221 @@
+{
+  "events": {
+    "TaskCompletedEvent": "Task completed <i class=\"mdi mdi-arrow-right\"></i> {{taskName}}",
+    "TaskAssignedEvent": "Task assigned <i class=\"mdi mdi-arrow-right\"></i> {{taskName}}",
+    "JsonSchemaDocumentCreatedEvent": "Case created",
+    "JsonSchemaDocumentModifiedEvent": "Case modified",
+    "ProcessStartedEvent": "Process started",
+    "ProcessEndedEvent": "Process finished",
+    "DossierDocumentGeneratedEvent": "Case document generated",
+    "DocumentRelatedFileAddedEvent": "Related file added",
+    "DocumentRelatedFileRemovedEvent": "Related file removed"
+  },
+  "dossier": {
+    "title": {
+      "single": "Case",
+      "plural": "Cases"
+    },
+    "tabs": {
+      "summary": "Summary",
+      "progress": "Progress",
+      "audit": "Audit",
+      "maps": "Maps",
+      "documents": "Documents",
+      "custom-dossier": "Custom dossier",
+      "custom-maps": "Custom maps"
+    }
+  },
+  "document": {
+    "title": {
+      "single": "Document",
+      "plural": "Documents"
+    },
+    "id": "Reference ID",
+    "createdBy": "Created by",
+    "createdOn": "Created on",
+    "sequence": "Sequence"
+  },
+  "summary": {
+    "userTasksDoneState": "All done!"
+  },
+  "dashboard": {
+    "openTasks": {
+      "title": "Open tasks"
+    },
+    "openTask": {
+      "title": "Open task"
+    },
+    "activeProcess": {
+      "title": "Active process"
+    },
+    "activeProcesses": {
+      "title": "Active processes"
+    },
+    "tasksCompleted": {
+      "title": "Tasks completed"
+    },
+    "taskCompleted": {
+      "title": "Task completed"
+    },
+    "statistics": {
+      "title": "Statistics"
+    },
+    "processes": {
+      "title": "Processes"
+    },
+    "process": {
+      "title": "Process",
+      "details": "Process details"
+    },
+    "startProcess": {
+      "title": "Start"
+    },
+    "version": {
+      "title": "Version"
+    },
+    "processingLeadTime": {
+      "title": "Processing lead time",
+      "description": "average over the last 30 days"
+    },
+    "tasks": {
+      "title": "Tasks"
+    },
+    "task": {
+      "title": "Task"
+    }
+  },
+  "account": {
+    "title": "Account",
+    "links": {
+      "profile": "Profile",
+      "password": "Password",
+      "help": "Help",
+      "feedback": "Feedback",
+      "signOut": "Sign out"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "context": {
+      "title": "Context"
+    },
+    "language": {
+      "title": "Language",
+      "options": {
+        "nl": "Nederlands",
+        "en": "English"
+      }
+    },
+    "notification": {
+      "title": "Notifications",
+      "frequency": {
+        "title": "Notification frequency"
+      },
+      "taskNotifications": "Task notifications",
+      "taskNotificationsIntro": "Receive an email when a task is assigned to you",
+      "emailNotifications": "Daily task overview",
+      "emailNotificationsIntro": "Personal overview of your open tasks",
+      "emailNotificationOnMonday": "Monday",
+      "emailNotificationOnTuesday": "Tuesday",
+      "emailNotificationOnWednesday": "Wednesday",
+      "emailNotificationOnThursday": "Thursday",
+      "emailNotificationOnFriday": "Friday",
+      "emailNotificationOnSaturday": "Saturday",
+      "emailNotificationOnSunday": "Sunday"
+    },
+    "version": {
+      "title": "Version information"
+    }
+  },
+  "decisions": {
+    "upload": {
+      "description": "Select a .dmn file to upload"
+    }
+  },
+  "message": {
+    "empty": "No result found"
+  },
+  "cta": {
+    "close": "Close",
+    "moreDetails": "More details"
+  },
+  "formManagement": {
+    "noFormDefinitionFound": "There is no form connected to the start event/user task. To link a form goto admin-menu > form links.",
+    "gotoFormLinksButton": "Configure now"
+  },
+  "serviceTaskManagement": {
+    "subtitle": "Link {{selectedElement}} to Open Zaak",
+    "context": "Choose one of the existing open zaak handler or create a new one",
+    "noZaakTypeLinkFound": "There is no Zaak type link connected to the service task. To link a Zaak type goto admin-menu > dossier-management > dossier.",
+    "serviceTaskHandler": {
+      "operation": "Operation:",
+      "status": "Status:",
+      "result": "Result:"
+    },
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "save": "Save",
+    "addMore": "Add another",
+    "gotoDossierManagementButton": "Configure now",
+    "selectDocumentDefinitionName": "Select the Document Definition",
+    "selectedZaakType": "Selected zaak type",
+    "selectZaakOperation": "Select which action you want to take on the zaak",
+    "selectZaakStatus": "Select a zaak status",
+    "noZaakStatusConfigured": "No zaak status available go to Open Zaak to create a zaak status",
+    "selectZaakResult": "Select a zaak result",
+    "noZaakResultConfigured": "No zaak result available go to Open Zaak to create a zaak result"
+  },
+  "Task": "Task",
+  "Tasks": "Tasks",
+  "Analysis": "Analysis",
+  "Contexts": "Contexts",
+  "Overview of all Contexts": "Overview of all Contexts",
+  "Create new Context": "Create new Context",
+  "Entitlements": "Entitlements",
+  "Overview of all Entitlements": "Overview of all Entitlements",
+  "Create new Entitlement": "Create new Entitlement",
+  "Entitlement details": "Entitlement details",
+  "Users": "Users",
+  "Overview of all Users": "Overview of all Users",
+  "Create new User": "Create new User",
+  "User details": "User details",
+  "Choice fields": "Choice fields",
+  "Overview of all Choice fields": "Overview of all Choice fields",
+  "Create new Choice field": "Create new Choice field",
+  "Choice field details": "Choice field details",
+  "Choice field values": "Choice field values",
+  "Overview of all Choice field values": "Overview of all Choice field values",
+  "Create new Choice field value": "Create new Choice field value",
+  "Choice field value details": "Choice field value details",
+  "Connectors": "Connectors",
+  "Overview of all Connectors": "Overview of all Connectors",
+  "Create new Connector": "Create new Connector",
+  "Connector details": "Connector details",
+  "Process": "Process",
+  "Processes": "Processes",
+  "Overview of all Processes": "Overview of all Processes",
+  "Create new Process": "Create new Process",
+  "Process details": "Process details",
+  "Decision tables": "Decision tables",
+  "Overview of all Decision tables": "Overview of all decision tables",
+  "Create new Milestone": "Create new Milestone",
+  "Create new Milestone Set": "Create new Milestone Set",
+  "Forms": "Forms",
+  "Overview of all Forms": "Overview of all Forms",
+  "Create new Form": "Create new Form",
+  "Form Builder": "Form Builder",
+  "Form links": "Process connections",
+  "Dossier": "Case",
+  "Dossiers": "Cases",
+  "Overview of all Dossiers": "Overview of all Cases",
+  "Start Dossier": "Create New Case",
+  "Dossier details": "Case details",
+  "Related documents": "Related documents",
+  "Overview of all documents in this dossier": "Overview of all documents in this case",
+  "Basics": "Basics",
+  "A&E": "A&E",
+  "Other": "Other",
+  "Download": "Download",
+  "Upload": "Upload"
+}
