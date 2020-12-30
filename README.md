@@ -49,3 +49,7 @@ Run `npm run libs:test:libraryName` to execute unit tests.
 ## Running the mock API
 
 We use json-server to mock APIs. To use it run `npm run mock`.
+
+## License
+The source files in this repo are licensed to you under the EUPL 1.2. You can download the license in 23 languages: https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12. If you have any questions about the use of this codebase in a larger work: just ask us. 
+All third party components are delivered under their own, original license.
