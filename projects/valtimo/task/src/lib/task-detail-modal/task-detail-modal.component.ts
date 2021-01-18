@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, ViewChild, ViewEncapsulation} from '@angular/core';
-import {FormAssociation, FormioSubmission, FormSubmissionResult, Task} from '@valtimo/contract';
-import {TaskService} from '../task.service';
-import {FormService} from '@valtimo/form';
-import {ToastrService} from 'ngx-toastr';
+import { Component, EventEmitter, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormioComponent, ModalComponent } from '@valtimo/components';
+import { FormAssociation, FormioSubmission, FormSubmissionResult, Task } from '@valtimo/contract';
+import { FormLinkService } from '@valtimo/form-link';
+import { FormioForm } from 'angular-formio';
 import * as momentImported from 'moment';
-import {DocumentService} from '@valtimo/document';
-import {FormioForm} from 'angular-formio';
-import {FormioComponent, ModalComponent} from '@valtimo/components';
-import {FormLinkService} from '@valtimo/form-link';
-import {Router} from '@angular/router';
-import {NGXLogger} from 'ngx-logger';
+import { NGXLogger } from 'ngx-logger';
+import { ToastrService } from 'ngx-toastr';
 
 const moment = momentImported;
 moment.locale(localStorage.getItem('langKey') || 'en');
@@ -37,7 +34,6 @@ moment.locale(localStorage.getItem('langKey') || 'en');
   encapsulation: ViewEncapsulation.None
 })
 export class TaskDetailModalComponent {
-
   public task: Task | null = null;
   public formDefinition: FormioForm;
   public page: any = null;
@@ -47,19 +43,11 @@ export class TaskDetailModalComponent {
   @ViewChild('form') form: FormioComponent;
   @ViewChild('taskDetailModal') modal: ModalComponent;
   @Output() formSubmit = new EventEmitter();
+  @Output() assignmentOfTaskChanged = new EventEmitter();
   private formAssociation: FormAssociation;
   public errorMessage: String = null;
 
-  constructor(
-    private taskService: TaskService,
-    private formService: FormService,
-    private toastr: ToastrService,
-    private documentService: DocumentService,
-    private formLinkService: FormLinkService,
-    private router: Router,
-    private logger: NGXLogger
-  ) {
-  }
+  constructor(private toastr: ToastrService, private formLinkService: FormLinkService, private router: Router, private logger: NGXLogger) {}
 
   openTaskDetails(task: Task) {
     this.task = task;
@@ -67,38 +55,41 @@ export class TaskDetailModalComponent {
       title: task.name,
       subtitle: `Created ${moment(task.created).fromNow()}`
     };
-    this.formLinkService.getPreFilledFormDefinitionByFormLinkId(
-      task.processDefinitionKey,
-      task.businessKey,
-      task.taskDefinitionKey,
-      task.id // taskInstanceId
-    ).subscribe((formDefinition) => {
-      this.formAssociation = formDefinition.formAssociation;
-      const className = this.formAssociation.formLink.className.split('.');
-      const linkType = className[className.length - 1];
-      switch (linkType) {
-        case 'BpmnElementFormIdLink':
-          this.formDefinition = formDefinition;
+    this.formLinkService
+      .getPreFilledFormDefinitionByFormLinkId(
+        task.processDefinitionKey,
+        task.businessKey,
+        task.taskDefinitionKey,
+        task.id // taskInstanceId
+      )
+      .subscribe(
+        (formDefinition) => {
+          this.formAssociation = formDefinition.formAssociation;
+          const className = this.formAssociation.formLink.className.split('.');
+          const linkType = className[className.length - 1];
+          switch (linkType) {
+            case 'BpmnElementFormIdLink':
+              this.formDefinition = formDefinition;
+              this.modal.show();
+              break;
+            case 'BpmnElementUrlLink':
+              const url = this.router.serializeUrl(this.router.createUrlTree([formDefinition.formAssociation.formLink.url]));
+              window.open(url, '_blank');
+              break;
+            case 'BpmnElementAngularStateUrlLink':
+              this.router.navigate([formDefinition.formAssociation.formLink.url]);
+              break;
+            default:
+              this.logger.fatal('Unsupported class name');
+          }
+        },
+        (errors) => {
+          if (errors?.error?.detail) {
+            this.errorMessage = errors.error.detail;
+          }
           this.modal.show();
-          break;
-        case 'BpmnElementUrlLink':
-          const url = this.router.serializeUrl(
-            this.router.createUrlTree([formDefinition.formAssociation.formLink.url])
-          );
-          window.open(url, '_blank');
-          break;
-        case 'BpmnElementAngularStateUrlLink':
-          this.router.navigate([formDefinition.formAssociation.formLink.url]);
-          break;
-        default:
-          this.logger.fatal('Unsupported class name');
-      }
-    }, errors => {
-      if (errors?.error?.detail) {
-        this.errorMessage = errors.error.detail;
-      }
-      this.modal.show();
-    });
+        }
+      );
   }
 
   public gotoFormLinkScreen() {
@@ -107,20 +98,18 @@ export class TaskDetailModalComponent {
   }
 
   public onSubmit(submission: FormioSubmission) {
-    this.formLinkService.onSubmit(
-      this.task.processDefinitionKey,
-      this.formAssociation.formLink.id,
-      submission.data,
-      this.task.businessKey,
-      this.task.id
-    ).subscribe((formSubmissionResult: FormSubmissionResult) => {
-      this.toastr.success(this.task.name + ' has successfully been completed');
-      this.modal.hide();
-      this.task = null;
-      this.formSubmit.emit();
-    }, errors => {
-      this.form.showErrors(errors);
-    });
+    this.formLinkService
+      .onSubmit(this.task.processDefinitionKey, this.formAssociation.formLink.id, submission.data, this.task.businessKey, this.task.id)
+      .subscribe(
+        (formSubmissionResult: FormSubmissionResult) => {
+          this.toastr.success(this.task.name + ' has successfully been completed');
+          this.modal.hide();
+          this.task = null;
+          this.formSubmit.emit();
+        },
+        (errors) => {
+          this.form.showErrors(errors);
+        }
+      );
   }
-
 }

@@ -20,7 +20,6 @@ export class OpenZaakConfig {
   clientId: string;
   secret: string;
   rsin: string;
-  organisation: string;
 }
 
 export class CreateOpenZaakConfigRequest {
@@ -28,7 +27,6 @@ export class CreateOpenZaakConfigRequest {
   clientId: string;
   secret: string;
   rsin: string;
-  organisation: string;
 }
 
 export class ModifyOpenZaakConfigRequest {
@@ -36,7 +34,6 @@ export class ModifyOpenZaakConfigRequest {
   clientId: string;
   secret: string;
   rsin: string;
-  organisation: string;
 }
 
 export interface CreateOpenZaakConfigResult {

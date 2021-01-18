@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {VersionService} from '../version/version.service';
-import {TranslateService} from '@ngx-translate/core';
-import {ContextService} from '@valtimo/context';
-import {UserProviderService} from '@valtimo/security';
-import {HttpClient} from '@angular/common/http';
-import {NGXLogger} from 'ngx-logger';
-import {ValtimoVersion, UserIdentity} from '@valtimo/contract';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { ContextService } from '@valtimo/context';
+import { UserIdentity, ValtimoVersion } from '@valtimo/contract';
+import { UserProviderService } from '@valtimo/security';
+import { NGXLogger } from 'ngx-logger';
+import { combineLatest } from 'rxjs';
+import { VersionService } from '../version/version.service';
 
 @Component({
   selector: 'valtimo-right-sidebar',
@@ -74,12 +75,11 @@ export class RightSidebarComponent implements OnInit {
   }
 
   private loadContextSwitch() {
-    this.contextService.getUserContexts().subscribe(userContexts => {
-      this.contextService.getUserContextActive().subscribe(userContextActive => {
+    combineLatest([this.contextService.getUserContexts(), this.contextService.getUserContextActive()])
+      .subscribe(([userContexts, userContextActive]) => {
         this.userContextActive = userContextActive;
         this.userContexts = userContexts;
       });
-    });
   }
 
   public setUserContext(contextId: number) {

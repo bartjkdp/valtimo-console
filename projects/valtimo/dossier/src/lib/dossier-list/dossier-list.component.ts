@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
-import {DocumentSearchRequest, DocumentSearchRequestImpl, DocumentService} from '@valtimo/document';
-import {ProcessDocumentDefinition} from '@valtimo/contract';
-import {DossierService} from '../dossier.service';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ProcessDocumentDefinition } from '@valtimo/contract';
+import { DocumentSearchRequest, DocumentSearchRequestImpl, DocumentService } from '@valtimo/document';
 import * as momentImported from 'moment';
-import {DefaultTabs} from '../dossier-detail-tab-enum';
-import {DossierProcessStartModalComponent} from '../dossier-process-start-modal/dossier-process-start-modal.component';
+import { Subscription } from 'rxjs';
+import { DefaultTabs } from '../dossier-detail-tab-enum';
+import { DossierProcessStartModalComponent } from '../dossier-process-start-modal/dossier-process-start-modal.component';
+import { DossierService } from '../dossier.service';
 
 declare var $;
 
@@ -33,7 +34,7 @@ moment.locale(localStorage.getItem('langKey') || '');
   templateUrl: './dossier-list.component.html',
   styleUrls: ['./dossier-list.component.css']
 })
-export class DossierListComponent implements OnInit {
+export class DossierListComponent implements OnInit, OnDestroy {
 
   public documentDefinitionName = '';
   public implementationDefinitions: any;
@@ -57,6 +58,8 @@ export class DossierListComponent implements OnInit {
   private modalListenerAdded = false;
   @ViewChild('processStartModal') processStart: DossierProcessStartModalComponent;
 
+  private routerSubscription: Subscription;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -65,10 +68,14 @@ export class DossierListComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.doInit();
     this.routeEvent(this.router);
     this.modalListenerAdded = false;
+  }
+
+  ngOnDestroy(): void {
+    this.routerSubscription.unsubscribe();
   }
 
   paginationSet() {
@@ -76,7 +83,7 @@ export class DossierListComponent implements OnInit {
   }
 
   private routeEvent(router: Router) {
-    router.events.subscribe(e => {
+    this.routerSubscription = router.events.subscribe(e => {
       if (e instanceof NavigationEnd) {
         this.doInit();
         this.getData();
@@ -233,8 +240,8 @@ export class DossierListComponent implements OnInit {
 
   private transformDocuments(documentsContent: Array<any>) {
     this.items = documentsContent.map(document => {
-      const {content, ...others} = document;
-      return {...content, ...others};
+      const { content, ...others } = document;
+      return { ...content, ...others };
     });
   }
 

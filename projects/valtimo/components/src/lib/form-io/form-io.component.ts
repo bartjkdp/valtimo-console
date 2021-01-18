@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {FormioForm} from 'angular-formio';
-import {FormioRefreshValue} from 'angular-formio/formio.common';
-import {FormioSubmission, ValtimoFormioOptions} from '@valtimo/contract';
-import {UserProviderService} from '@valtimo/security';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { FormioSubmission, ValtimoFormioOptions } from '@valtimo/contract';
+import { UserProviderService } from '@valtimo/security';
+import { Formio, FormioForm } from 'angular-formio';
+import { FormioRefreshValue } from 'angular-formio/formio.common';
+import jwt_decode from 'jwt-decode';
+import { KeycloakService } from 'keycloak-angular';
+import { NGXLogger } from 'ngx-logger';
+import { from, Subscription, timer } from 'rxjs';
+import { switchMap, take } from 'rxjs/operators';
 
 @Component({
   selector: 'valtimo-form-io',
   templateUrl: './form-io.component.html',
   styleUrls: ['./form-io.component.css']
 })
-export class FormioComponent implements OnInit, OnChanges {
-
+export class FormioComponent implements OnInit, OnChanges, OnDestroy {
   @Input() form: any;
   @Input() options: ValtimoFormioOptions;
   @Output() submit: EventEmitter<any> = new EventEmitter();
@@ -34,22 +38,28 @@ export class FormioComponent implements OnInit, OnChanges {
   formDefinition: FormioForm;
   public errors: string[] = [];
 
-  constructor(
-    private userProviderService: UserProviderService
-  ) {
-  }
+  private tokenRefreshTimerSubscription: Subscription;
+
+  constructor(private userProviderService: UserProviderService, private keycloakService: KeycloakService, private logger: NGXLogger) {}
 
   ngOnInit() {
     this.formDefinition = this.form;
     this.errors = [];
-    this.userProviderService.getToken().then((authToken: string) => {
-      localStorage.setItem('formioToken', authToken);
+
+    this.userProviderService.getToken().then((token: string) => {
+      this.setToken(token);
     });
   }
 
   ngOnChanges(changes: SimpleChanges) {
     this.formDefinition = changes.form.currentValue;
     this.reloadForm();
+  }
+
+  ngOnDestroy(): void {
+    if (this.tokenRefreshTimerSubscription) {
+      this.tokenRefreshTimerSubscription.unsubscribe();
+    }
   }
 
   reloadForm() {
@@ -67,4 +77,32 @@ export class FormioComponent implements OnInit, OnChanges {
     this.submit.emit(submission);
   }
 
+  private setToken(token: string): void {
+    localStorage.setItem('formioToken', token);
+    Formio.setToken(token);
+    this.setTimerForTokenRefresh(token);
+
+    this.logger.debug('New token set for form.io.');
+  }
+
+  private setTimerForTokenRefresh(token: string): void {
+    const tokenExp = (jwt_decode(token) as any).exp * 1000;
+    const expiryTime = tokenExp - Date.now() - 1000;
+    this.tokenRefreshTimerSubscription = timer(expiryTime).subscribe(() => {
+      this.refreshToken();
+    });
+
+    this.logger.debug(`Timer for form.io token refresh set for: ${expiryTime}ms.`);
+  }
+
+  private refreshToken(): void {
+    from(this.keycloakService.updateToken(-1))
+      .pipe(
+        switchMap(() => this.userProviderService.getToken()),
+        take(1)
+      )
+      .subscribe((token) => {
+        this.setToken(token);
+      });
+  }
 }

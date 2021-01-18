@@ -14,28 +14,43 @@
   ~ limitations under the License.
   -->
 
-<valtimo-modal #taskDetailModal elementId="taskDetailModal" [title]="page?.title" [subtitle]="page?.subtitle">
+<valtimo-modal
+  #taskDetailModal
+  elementId="taskDetailModal"
+  [title]="page?.title"
+  [subtitle]="page?.subtitle"
+  [templateBelowSubtitle]="assignUserToTask"
+>
   <div body *ngIf="formDefinition">
-    <valtimo-form-io #form [form]="formDefinition" (submit)="onSubmit($event)"
-                     [options]="formioOptions"></valtimo-form-io>
+    <valtimo-form-io
+      #form
+      [form]="formDefinition"
+      (submit)="onSubmit($event)"
+      [options]="formioOptions"
+    ></valtimo-form-io>
   </div>
   <div body *ngIf="!formDefinition && !errorMessage">
-    <div class="bg-warning text-black mb-0 p-3 text-center" [translate]="'formManagement.noFormDefinitionFound'">
-    </div>
+    <div class="bg-warning text-black mb-0 p-3 text-center" [translate]="'formManagement.noFormDefinitionFound'"></div>
   </div>
   <div body *ngIf="errorMessage">
     <div class="bg-danger text-black mb-0 p-3 text-center">
-      {{errorMessage}}
+      {{ errorMessage }}
     </div>
   </div>
   <div footer>
     <div class="mb-0 p-3 text-center" *ngIf="!formDefinition">
-      <button class="btn btn-secondary btn-space" type="button"
-              (click)="gotoFormLinkScreen();"
-              id="form-link-button">{{'formManagement.gotoFormLinksButton' | translate}}
+      <button class="btn btn-secondary btn-space" type="button" (click)="gotoFormLinkScreen()" id="form-link-button">
+        {{ 'formManagement.gotoFormLinksButton' | translate }}
       </button>
     </div>
   </div>
 </valtimo-modal>
 
-
+<ng-template #assignUserToTask>
+  <valtimo-assign-user-to-task
+    *ngIf="task && assignmentOfTaskChanged"
+    [taskId]="task.id"
+    [assigneeId]="task.assignee"
+    (assignmentOfTaskChanged)="assignmentOfTaskChanged.emit()"
+  ></valtimo-assign-user-to-task>
+</ng-template>

@@ -17,7 +17,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Task} from '@valtimo/contract';
+import {Task, ValtimoUserIdentity} from '@valtimo/contract';
 import {ConfigService} from '@valtimo/config';
 
 @Injectable({providedIn: 'root'})
@@ -41,6 +41,23 @@ export class TaskService {
 
   getTask(id: string): Observable<any> {
     return this.http.get(this.valtimoEndpointUri + 'task/' + id);
+  }
+
+  getCandidateUsers(id: string): Observable<ValtimoUserIdentity[]> {
+    return this.http.get<ValtimoUserIdentity[]>(this.valtimoEndpointUri + 'task/' + id + '/candidate-user');
+  }
+
+  assignTask(id: string, assignee: string): Observable<any> {
+    return this.http.post(this.valtimoEndpointUri + 'task/' + id + '/assign',
+      {
+        assignee: assignee
+      });
+  }
+
+  unassignTask(id: string): Observable<any> {
+    return this.http.post(this.valtimoEndpointUri + 'task/' + id + '/unassign',
+      null
+    );
   }
 
   completeTask(id: string, variables: Map<string, any>): Observable<any> {

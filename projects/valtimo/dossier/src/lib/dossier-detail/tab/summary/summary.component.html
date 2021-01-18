@@ -20,7 +20,7 @@
       <div *ngIf="document">
         <div class="mb-4">
           <strong>Metadata</strong>
-          <hr/>
+          <hr />
           <div>
             <dl class="row mb-0">
               <dd class="col-12 col-md-4 col-lg-3" translate="document.createdBy"></dd>
@@ -28,8 +28,7 @@
             </dl>
             <dl class="row mb-0">
               <dd class="col-12 col-md-4 col-lg-3" translate="document.createdOn"></dd>
-              <dt class="col-12 col-md-8 col-lg-9"
-                  [innerHTML]="moment(document.createdOn).format() || '-'"></dt>
+              <dt class="col-12 col-md-8 col-lg-9" [innerHTML]="moment(document.createdOn).format() || '-'"></dt>
             </dl>
             <dl class="row mb-0">
               <dd class="col-12 col-md-4 col-lg-3" translate="document.sequence"></dd>
@@ -38,7 +37,7 @@
           </div>
         </div>
         <div *ngIf="formDefinition" class="summaryForm">
-          <hr/>
+          <hr />
           <div class="mb-4">
             <valtimo-form-io [form]="formDefinition" [options]="options"></valtimo-form-io>
           </div>
@@ -52,7 +51,7 @@
       <ng-container *ngIf="!tasks.length">
         <valtimo-widget>
           <div class="p-3">
-            <img class="float-left" src="assets/audit-2.png" height="25">
+            <img class="float-left" src="assets/audit-2.png" height="25" />
             <span class="float-right">{{ 'summary.userTasksDoneState' | translate }}</span>
             <div class="clearfix"></div>
           </div>
@@ -74,8 +73,11 @@
           </div>
         </valtimo-widget>
       </ng-container>
-      <valtimo-task-detail-modal #taskDetail
-                                 (formSubmit)="init()"></valtimo-task-detail-modal>
+      <valtimo-task-detail-modal
+        #taskDetail
+        (formSubmit)="init()"
+        (assignmentOfTaskChanged)="init()"
+      ></valtimo-task-detail-modal>
     </div>
   </div>
 </div>

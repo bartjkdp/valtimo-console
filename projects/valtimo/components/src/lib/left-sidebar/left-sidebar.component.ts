@@ -15,6 +15,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'valtimo-left-sidebar',
@@ -23,9 +24,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LeftSidebarComponent implements OnInit {
 
-  constructor() { }
+  readonly menuTooltipText$ = this.translateService.stream('interface.mainMenu');
+  readonly toggleMenuText$ = this.translateService.stream('interface.toggleMenu');
 
-  ngOnInit() {
-  }
+  constructor(private translateService: TranslateService) {}
 
+  ngOnInit() {}
 }

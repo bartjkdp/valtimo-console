@@ -31,16 +31,17 @@ import {FormioForm} from 'angular-formio';
 })
 export class FormManagementEditComponent implements OnInit, OnDestroy {
 
-  public formDefinition: FormDefinition | null = null;
   private alertSub: Subscription = Subscription.EMPTY;
   private formDefinitionId: string | null = null;
   public modifiedFormDefinition: FormioForm = null;
+  public formDefinition: FormDefinition | null = null;
 
   constructor(
     private formManagementService: FormManagementService,
     private alertService: AlertService,
     private route: ActivatedRoute,
-    private router: Router) {
+    private router: Router
+  ) {
   }
 
   ngOnInit() {
@@ -85,7 +86,7 @@ export class FormManagementEditComponent implements OnInit, OnDestroy {
     if (!this.alertSub.closed) {
       return;
     }
-    const mssg = 'Delete Form Definition?';
+    const mssg = 'Delete Form?';
     const confirmations = [
       {
         label: 'Cancel',
@@ -110,7 +111,7 @@ export class FormManagementEditComponent implements OnInit, OnDestroy {
 
   deleteFormDefinition() {
     this.formManagementService.deleteFormDefinition(this.formDefinition.id).subscribe(() => {
-      this.router.navigate(['/forms']);
+      this.router.navigate(['/form-management']);
       this.alertService.success('Form deleted');
     }, err => {
       this.alertService.error('Error deleting Form');

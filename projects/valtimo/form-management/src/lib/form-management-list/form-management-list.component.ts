@@ -28,7 +28,8 @@ export class FormManagementListComponent implements OnInit {
 
   public formDefinitions: FormDefinition[] = [];
   public formDefinitionFields: any[] = [
-    {key: 'name', label: 'Name'}
+    {key: 'name', label: 'Name'},
+    {key: 'readOnly', label: 'Read-only'}
   ];
   public pagination = {
     collectionSize: 0,

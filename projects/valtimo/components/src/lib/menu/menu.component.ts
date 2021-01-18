@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-import {Component, ElementRef, OnInit, Renderer2} from '@angular/core';
-import {Event, NavigationEnd, Router} from '@angular/router';
-import {MenuItem} from '@valtimo/contract';
-import {MenuService} from './menu.service';
-import {NGXLogger} from 'ngx-logger';
-import {DocumentService} from '@valtimo/document';
-import {UserProviderService} from '@valtimo/security';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Event, NavigationEnd, Router } from '@angular/router';
+import { MenuItem } from '@valtimo/contract';
+import { DocumentService } from '@valtimo/document';
+import { UserProviderService } from '@valtimo/security';
+import { NGXLogger } from 'ngx-logger';
+import { Subscription } from 'rxjs';
+import { MenuService } from './menu.service';
 
 @Component({
   selector: 'valtimo-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css']
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent implements OnInit, OnDestroy {
   public menuItems: MenuItem[];
+  private routerSubscription: Subscription;
 
   constructor(
     private menuService: MenuService,
@@ -39,31 +41,41 @@ export class MenuComponent implements OnInit {
     private userProviderService: UserProviderService,
     private logger: NGXLogger
   ) {
-    router.events.subscribe((event: Event) => {
+  }
+
+  ngOnInit(): void {
+    this.openRouterSubscription();
+    this.menuItems = this.menuService.getMenuItems();
+    this.appendDossierSubMenuItems();
+    this.applyMenuRoleSecurity();
+  }
+
+  ngOnDestroy(): void {
+    this.routerSubscription.unsubscribe();
+  }
+
+  private openRouterSubscription(): void {
+    this.routerSubscription = this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
         this.closeSubMenu();
       }
     });
   }
 
-  ngOnInit() {
-    this.menuItems = this.menuService.getMenuItems();
-    this.appendDossierSubMenuItems();
-    this.applyMenuRoleSecurity();
-  }
-
   private applyMenuRoleSecurity(): void {
     this.userProviderService.getUserSubject().subscribe(user => {
-      this.logger.debug('applyMenuRoleSecurity');
-      const userRoles = user.roles;
-      this.menuItems.forEach((menuItem: MenuItem) => {
-        const access = this.determineRoleAccess(menuItem, userRoles);
-        this.logger.debug('Menu: check role access', menuItem.roles, access);
-        if (menuItem.show !== access) {
-          this.logger.debug('Menu: Change access', menuItem, access);
-          menuItem.show = access;
-        }
-      });
+      if (user.roles != null) {
+        this.logger.debug('applyMenuRoleSecurity');
+        const userRoles = user.roles;
+        this.menuItems.forEach((menuItem: MenuItem) => {
+          const access = this.determineRoleAccess(menuItem, userRoles);
+          this.logger.debug('Menu: check role access', menuItem.roles, access);
+          if (menuItem.show !== access) {
+            this.logger.debug('Menu: Change access', menuItem, access);
+            menuItem.show = access;
+          }
+        });
+      }
     });
   }
 
@@ -82,15 +94,15 @@ export class MenuComponent implements OnInit {
     this.documentService.getAllDefinitions().subscribe(definitions => {
       const dossierMenuItems: MenuItem[] = definitions.content
         .map((definition, index) => ({
-            link: ['/dossiers/' + definition.id.name],
-            title: definition.schema.title,
-            iconClass: 'icon mdi mdi-dot-circle',
-            sequence: index,
-            show: true
-          } as MenuItem)
+          link: ['/dossiers/' + definition.id.name],
+          title: definition.schema.title,
+          iconClass: 'icon mdi mdi-dot-circle',
+          sequence: index,
+          show: true
+        } as MenuItem)
         );
       this.logger.debug('found dossierMenuItems', dossierMenuItems);
-      const menuItemIndex = this.menuItems.findIndex(({title}) => title === 'Dossiers');
+      const menuItemIndex = this.menuItems.findIndex(({ title }) => title === 'Dossiers');
       if (menuItemIndex > 0) {
         const dossierMenu = this.menuItems[menuItemIndex];
         this.logger.debug('updating dossierMenu', dossierMenu);

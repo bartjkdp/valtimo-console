@@ -16,12 +16,21 @@
 
 <div class="px-3">
   <div class="main-content container-fluid">
-    <h4 class="title">{{ 'dashboard.openTasks.title' | translate }}
-      <sup class="ml-1 badge badge-pill badge-primary">{{ openTasks?.length }}</sup></h4>
+    <h4 class="title">
+      {{ 'dashboard.openTasks.title' | translate }}
+      <sup class="ml-1 badge badge-pill badge-primary">{{ openTasks?.length }}</sup>
+    </h4>
     <valtimo-widget>
-      <valtimo-list [items]="openTasks" [fields]="openTaskFields"
-                    (rowClicked)="rowOpenTaskClick($event)"></valtimo-list>
+      <valtimo-list
+        [items]="openTasks"
+        [fields]="openTaskFields"
+        (rowClicked)="rowOpenTaskClick($event)"
+      ></valtimo-list>
     </valtimo-widget>
-    <valtimo-task-detail-modal #taskDetail (formSubmit)="getOpenTasks()"></valtimo-task-detail-modal>
+    <valtimo-task-detail-modal
+      #taskDetail
+      (formSubmit)="getOpenTasks()"
+      (assignmentOfTaskChanged)="getOpenTasks()"
+    ></valtimo-task-detail-modal>
   </div>
 </div>

@@ -30,6 +30,7 @@ export interface FormDefinition {
   id: string;
   name: string;
   formDefinition: FormioForm;
+  readOnly: boolean;
 }
 
 export interface CreateFormDefinitionRequest {
@@ -42,5 +43,3 @@ export interface ModifyFormDefinitionRequest {
   name: string;
   formDefinition: string;
 }
-
-

@@ -104,6 +104,7 @@ export class DossierDetailTabSummaryComponent implements OnInit {
   private loadProcessInstanceTasks(processInstanceId: string) {
     this.processService.getProcessInstanceTasks(processInstanceId).subscribe(tasks => {
       tasks.forEach(task => {
+        task.assignee = task.assignee ? JSON.parse(task.assignee).assignee : '';
         task.createdUnix = this.moment(task.created).unix();
         task.created = this.moment(task.created).format('DD MMM YYYY HH:mm');
         task.isLocked = () => {
