@@ -146,7 +146,7 @@
   "serviceTaskManagement": {
     "subtitle": "Link {{selectedElement}} to Open Zaak",
     "context": "Choose one of the existing open zaak handler or create a new one",
-    "noZaakTypeLinkFound": "There is no Zaak type link connected to the service task. To link a Zaak type goto admin-menu > dossier-management > dossier.",
+    "noZaakTypeLinkFound": "There is no Zaak type link connected to the service task. To link a Zaak type go to Admin > Cases.",
     "serviceTaskHandler": {
       "operation": "Operation:",
       "status": "Status:",
@@ -206,6 +206,7 @@
   "Create new Form": "Create new Form",
   "Form Builder": "Form Builder",
   "Form links": "Process connections",
+  "Process migration": "Process migration",
   "Dossier": "Case",
   "Dossiers": "Cases",
   "Overview of all Dossiers": "Overview of all Cases",
@@ -217,5 +218,23 @@
   "A&E": "A&E",
   "Other": "Other",
   "Download": "Download",
-  "Upload": "Upload"
+  "Upload": "Upload",
+  "openZaak": {
+    "error": {
+      "configNotFound": "Open Zaak configuration not found, go to Admin > Open Zaak"
+    }
+  },
+  "interface": {
+    "mainMenu": "Main menu",
+    "toggleMenu": "Toggle menu",
+    "typeToSearch": "Type here to search",
+    "noSearchResults": "No results"
+  },
+  "assignTask": {
+    "assignedTo": "Assigned to ",
+    "header": "Assign a user to this task",
+    "placeholder": "Select a user",
+    "remove": "Unassign",
+    "save": "Save"
+  }
 }

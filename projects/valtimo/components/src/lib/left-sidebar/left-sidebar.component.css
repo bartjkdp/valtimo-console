@@ -21,3 +21,9 @@
 .be-left-sidebar .left-sidebar-toggle:before {
   font-size: 1.615rem;
 }
+
+.be-left-sidebar .sidebar-elements > li > a.be-toggle-left-sidebar {
+  height: 40px;
+  display: flex;
+  align-items: center;
+}

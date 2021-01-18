@@ -146,7 +146,7 @@
   "serviceTaskManagement": {
     "subtitle": "Link {{selectedElement}} naar Open Zaak",
     "context": "Kies een bestaande open zaak configuratie of maak een nieuwe aan.",
-    "noZaakTypeLinkFound": "Er is geen Zaak type link gekoppeld aan de service task. Om een Zaak type link te koppelen ga naar admin-menu > dossier-management > dossier.",
+    "noZaakTypeLinkFound": "Er is geen Zaak type link gekoppeld aan de service task. Om een Zaak type link te koppelen ga naar Admin > Dossiers.",
     "gotoDossierManagementButton": "Configureer nu",
     "serviceTaskHandler": {
       "operation": "Operatie:",
@@ -206,6 +206,7 @@
   "Create new Form": "Maak nieuw Formulier",
   "Form Builder": "Formulier Bouwer",
   "Form links": "Proceskoppelingen",
+  "Process migration": "Procesmigratie",
   "Dossier": "Dossier",
   "Dossiers": "Dossiers",
   "Overview of all Dossiers": "Overzicht van alle Dossiers",
@@ -217,5 +218,23 @@
   "A&E": "A&E",
   "Other": "Overig",
   "Download": "Downloaden",
-  "Upload": "Uploaden"
+  "Upload": "Uploaden",
+  "openZaak": {
+    "error": {
+      "configNotFound": "Open Zaak configuratie niet gevonden, ga naar Admin > Open Zaak"
+    }
+  },
+  "interface": {
+    "mainMenu": "Hoofdmenu",
+    "toggleMenu": "Menu dichtklappen",
+    "typeToSearch": "Typ hier om te zoeken",
+    "noSearchResults": "Geen resultaten"
+  },
+  "assignTask": {
+    "assignedTo": "Toegewezen aan ",
+    "header": "Gebruiker toewijzen aan deze taak",
+    "placeholder": "Selecteer een gebruiker",
+    "remove": "Toewijzing ongedaan maken",
+    "save": "Opslaan"
+  }
 }

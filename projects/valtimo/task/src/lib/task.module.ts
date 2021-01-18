@@ -14,30 +14,44 @@
  * limitations under the License.
  */
 
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {HttpLoaderFactory} from '@valtimo/contract';
-import {TaskRoutingModule} from './task-routing.module';
-import {TaskListComponent} from './task-list/task-list.component';
-import {CamundaFormModule, FormIoModule, ListModule, ModalModule, PageHeaderModule, WidgetModule} from '@valtimo/components';
-import {ToastrModule} from 'ngx-toastr';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {TaskDetailModalComponent} from './task-detail-modal/task-detail-modal.component';
-import {PublicTaskDetailComponent} from './public-task-detail/public-task-detail.component';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {HttpClient} from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import {
+  CamundaFormModule,
+  FormIoModule,
+  ListModule,
+  ModalModule,
+  PageHeaderModule,
+  SpinnerModule,
+  WidgetModule,
+  SearchableDropdownModule
+} from '@valtimo/components';
+import { HttpLoaderFactory } from '@valtimo/contract';
+import { ToastrModule } from 'ngx-toastr';
+import { PublicTaskDetailComponent } from './public-task-detail/public-task-detail.component';
+import { TaskDetailModalComponent } from './task-detail-modal/task-detail-modal.component';
+import { TaskListComponent } from './task-list/task-list.component';
+import { TaskRoutingModule } from './task-routing.module';
+import { AssignUserToTaskComponent } from './assign-user-to-task/assign-user-to-task.component';
 
 @NgModule({
-  declarations: [TaskListComponent, TaskDetailModalComponent, PublicTaskDetailComponent],
+  declarations: [TaskListComponent, TaskDetailModalComponent, PublicTaskDetailComponent, AssignUserToTaskComponent],
   imports: [
     CommonModule,
     TaskRoutingModule,
     ListModule,
     PageHeaderModule,
     WidgetModule,
+    SpinnerModule,
+    SearchableDropdownModule,
     CamundaFormModule,
     BrowserAnimationsModule,
+    FormsModule,
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-full-width',
       preventDuplicates: true
@@ -53,8 +67,6 @@ import {HttpClient} from '@angular/common/http';
     FormIoModule,
     ModalModule
   ],
-  exports: [TaskListComponent, TaskDetailModalComponent]
+  exports: [TaskListComponent, TaskDetailModalComponent, AssignUserToTaskComponent]
 })
-export class TaskModule {
-
-}
+export class TaskModule {}

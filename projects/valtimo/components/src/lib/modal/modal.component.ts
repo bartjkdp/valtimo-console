@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {AfterViewInit, Component, Input} from '@angular/core';
+import { AfterViewInit, Component, Input, TemplateRef } from '@angular/core';
 
 declare var $;
 
@@ -24,17 +24,16 @@ declare var $;
   styleUrls: ['./modal.component.scss']
 })
 export class ModalComponent implements AfterViewInit {
-
   @Input() elementId: string;
   @Input() title = '';
   @Input() subtitle = '';
+  @Input() templateBelowSubtitle: TemplateRef<any>;
   @Input() showFooter = false;
 
-  constructor() {
-  }
+  constructor() {}
 
   ngAfterViewInit() {
-    $(`#${this.elementId}`).modal({show: false});
+    $(`#${this.elementId}`).modal({ show: false });
   }
 
   show() {
@@ -44,5 +43,4 @@ export class ModalComponent implements AfterViewInit {
   hide() {
     $(`#${this.elementId}`).modal('hide');
   }
-
 }

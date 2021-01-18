@@ -22,4 +22,3 @@ export * from './lib/task.service';
 export * from './lib/task.module';
 export * from './lib/task-detail-modal/task-detail-modal.component';
 export * from './lib/task-list/task-list.component';
-

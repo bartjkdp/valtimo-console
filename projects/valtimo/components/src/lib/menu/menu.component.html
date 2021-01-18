@@ -15,7 +15,6 @@
   -->
 
 <ul class="sidebar-elements">
-  <li class="divider">Menu</li>
   <ng-container *ngFor="let menuItem of menuItems">
     <li [class.parent]="menuItem.children"
             [hidden]="!menuItem.show"

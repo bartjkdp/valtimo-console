@@ -93,3 +93,6 @@ export * from './lib/modal/modal.module';
 export * from './lib/modal/modal.component';
 
 export * from './lib/spinner/spinner.module';
+
+export * from './lib/searchable-dropdown/searchable-dropdown.module';
+export * from './lib/searchable-dropdown/searchable-dropdown.component';
