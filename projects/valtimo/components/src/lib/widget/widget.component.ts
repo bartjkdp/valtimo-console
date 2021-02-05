@@ -35,39 +35,56 @@ export class WidgetComponent implements OnInit {
   @Input() collapseAble?: string;
   @Input() collapse?: string;
   @Input() additionalClasses?: string;
+
   public cardClassName: string;
   public contrastClass: string;
   public dividerClass: string;
   public isCollapsed: boolean;
 
-  constructor() {
+  ngOnInit(): void {
+    this.setCardClassName();
+    this.setType();
+    this.setAdditionalClasses();
+    this.setContrast();
+    this.setDivider();
+    this.setCollapse();
   }
 
-  ngOnInit() {
+  public toggleContent(): void {
+    if (this.collapseAble) {
+      this.isCollapsed = !this.isCollapsed;
+    }
+  }
+
+  private setCardClassName(): void {
     this.cardClassName = 'card-full-default';
+  }
+
+  private setType(): void {
     if (this.type) {
-      this.cardClassName = 'card-full-' + this.type;
+      this.cardClassName = `card-full-${this.type}`;
     }
+  }
+
+  private setAdditionalClasses(): void {
     if (this.additionalClasses) {
-      this.cardClassName = this.cardClassName + ' ' + this.additionalClasses;
+      this.cardClassName = `${this.cardClassName} ${this.additionalClasses}`;
     }
+  }
+
+  private setContrast(): void {
     if (this.contrast) {
       this.contrastClass = 'card-header-contrast';
     }
+  }
+
+  private setDivider(): void {
     if (this.divider) {
       this.dividerClass = 'card-header-divider';
     }
-    if (this.collapseAble && this.collapse === 'hide') {
-      this.isCollapsed = false;
-    } else {
-      this.isCollapsed = true;
-    }
   }
 
-  public toggleContent() {
-    if (this.collapseAble) {
-      return this.isCollapsed = !this.isCollapsed;
-    }
-    return true;
+  private setCollapse(): void {
+    this.isCollapsed = !(this.collapseAble && this.collapse === 'hide');
   }
 }
