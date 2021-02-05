@@ -5,9 +5,11 @@
 /deployment
 /tmp
 /out-tsc
+/projects/valtimo/layout/src/beagle/dist
 
 # dependencies
 /node_modules
+/projects/valtimo/layout/src/beagle/src/assets
 
 # profiling files
 chrome-profiler-events.json
@@ -50,5 +52,9 @@ Thumbs.db
 
 # test output
 /projects/out-tsc
+
+# plato transpiled code
+/plato/out-tsc
+/plato/report
 
 /.gradle
