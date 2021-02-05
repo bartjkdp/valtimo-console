@@ -28,6 +28,7 @@ import {
 import {AlertService, ModalComponent} from '@valtimo/components';
 import {OpenZaakService} from '../../open-zaak.service';
 import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'valtimo-open-zaak-service-task-connector-modal-extension',
@@ -64,6 +65,7 @@ export class OpenZaakServiceTaskConnectorModalExtensionComponent implements OnIn
     private openZaakService: OpenZaakService,
     private router: Router,
     private alertService: AlertService,
+    private translateService: TranslateService
   ) {
     this.modalOptions = {};
     this.selectedElement = null;
@@ -87,7 +89,7 @@ export class OpenZaakServiceTaskConnectorModalExtensionComponent implements OnIn
 
     this.openZaakService.getOpenZaakConfig().subscribe(config => {
       if (config === null) {
-        this.alertService.error('OpenZaak configuration not found, goto Admin > OpenZaak');
+        this.alertService.error(this.translateService.instant('openZaak.error.configNotFound'));
       } else {
         this.getZaakTypeLinkByProcess(this.processDefinitionKey);
         this.loadZaakTypes();

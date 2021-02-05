@@ -53,7 +53,6 @@ export class OpenZaakComponent implements OnInit {
           this.config.controls.clientId.setValue(config.clientId);
           this.config.controls.secret.setValue(config.secret);
           this.config.controls.rsin.setValue(config.rsin);
-          this.config.controls.organisation.setValue(config.organisation);
         }
       }
     );
@@ -77,10 +76,6 @@ export class OpenZaakComponent implements OnInit {
         Validators.required,
         Validators.minLength(9),
         Validators.maxLength(9)
-      ]),
-      organisation: new FormControl('', [
-        Validators.required,
-        Validators.maxLength(255)
       ])
     });
   }
@@ -91,8 +86,7 @@ export class OpenZaakComponent implements OnInit {
         url: this.config.value.url,
         clientId: this.config.value.clientId,
         secret: this.config.value.secret,
-        rsin: this.config.value.rsin,
-        organisation: this.config.value.organisation
+        rsin: this.config.value.rsin
       };
       this.openZaakService.createOpenZaakConfig(request).subscribe(result => {
         this.logger.debug('result', result);
@@ -106,8 +100,7 @@ export class OpenZaakComponent implements OnInit {
         url: this.config.value.url,
         clientId: this.config.value.clientId,
         secret: this.config.value.secret,
-        rsin: this.config.value.rsin,
-        organisation: this.config.value.organisation
+        rsin: this.config.value.rsin
       };
       this.openZaakService.modifyOpenZaakConfig(request).subscribe(result => {
         this.logger.debug('result', result);

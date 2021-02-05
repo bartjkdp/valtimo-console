@@ -22,6 +22,7 @@ import {OpenZaakService} from '../open-zaak.service';
 import {AlertService, ModalComponent} from '@valtimo/components';
 import {NGXLogger} from 'ngx-logger';
 import {ToastrService} from 'ngx-toastr';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'valtimo-open-zaak-type-link-extension',
@@ -44,7 +45,8 @@ export class OpenZaakTypeLinkExtensionComponent {
     private openZaakService: OpenZaakService,
     private alertService: AlertService,
     private toasterService: ToastrService,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    private translateService: TranslateService
   ) {
     this.documentDefinitionName = this.route.snapshot.paramMap.get('name');
   }
@@ -61,8 +63,8 @@ export class OpenZaakTypeLinkExtensionComponent {
   openModal() {
     this.openZaakService.getOpenZaakConfig().subscribe(config => {
         if (config === null) {
-          this.alertService.error('OpenZaak configuration not found, goto Admin > OpenZaak');
-          this.logger.error('not found config');
+          this.alertService.error(this.translateService.instant('openZaak.error.configNotFound'));
+          this.logger.error('not found config test');
         } else {
           this.loadZaakTypes();
           this.openZaakService.getZaakTypeLink(this.documentDefinitionName).subscribe(zaakTypeLink => {
