@@ -85,7 +85,7 @@
               </div>
 
               <div class="form-group row">
-                <label class="col-12 col-sm-3 col-form-label text-sm-right" for="rsin">RSIN</label>
+                <label class="col-12 col-sm-3 col-form-label text-sm-right" for="rsin">RSIN / Organisation</label>
                 <div class="col-12 col-sm-8 col-lg-6">
                   <input type="text" id="rsin" autocomplete="off" formControlName="rsin" class="form-control"
                          placeholder="RSIN"
@@ -99,24 +99,6 @@
                     <div *ngIf="formControls.rsin.errors.required">RSIN is required</div>
                     <div *ngIf="formControls.rsin.errors.maxlength">Length should be 9</div>
                     <div *ngIf="formControls.rsin.errors.minlength">Length should be 9</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <label class="col-12 col-sm-3 col-form-label text-sm-right" for="organisation">Organisation</label>
-                <div class="col-12 col-sm-8 col-lg-6">
-                  <input type="text" id="organisation" autocomplete="off" formControlName="organisation" class="form-control"
-                         placeholder="Organisation"
-                         [ngClass]="{
-                          'is-valid': formControls.organisation.touched && formControls.organisation.valid,
-                          'is-invalid': formControls.organisation.touched && formControls.organisation.errors
-                          }"
-                         required/>
-                  <div *ngIf="formControls.organisation.touched && formControls.organisation.errors"
-                       class="invalid-feedback">
-                    <div *ngIf="formControls.organisation.errors.required">Organisation is required</div>
-                    <div *ngIf="formControls.organisation.errors.maxlength">Maximum length is 255</div>
                   </div>
                 </div>
               </div>

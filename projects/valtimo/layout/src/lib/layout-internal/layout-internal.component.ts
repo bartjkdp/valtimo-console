@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
 import {LayoutService} from '../layout.service';
 
 declare var App;
@@ -24,17 +25,32 @@ declare var App;
   templateUrl: './layout-internal.component.html',
   styleUrls: ['./layout-internal.component.scss']
 })
-export class LayoutInternalComponent implements OnInit, AfterViewInit {
+export class LayoutInternalComponent implements AfterViewInit {
+  @ViewChild('wrapper') wrapperRef: ElementRef;
 
-  constructor(
-    public layoutService: LayoutService
-  ) {
-  }
+  readonly menuOpen$ = new BehaviorSubject<boolean>(true);
+  readonly menuWidth$ = new BehaviorSubject<number>(undefined);
 
-  ngOnInit() {
+  readonly observer = new MutationObserver((e: any) =>
+    this.menuOpen$.next(!e[0].target.className.includes('be-collapsible-sidebar-collapsed'))
+  );
+
+  constructor(public layoutService: LayoutService, private renderer: Renderer2) {
+    this.renderer.addClass(document.body, 'be-animate');
   }
 
   ngAfterViewInit(): void {
     App.init();
+
+    this.observer.observe(this.wrapperRef.nativeElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+      childList: false,
+      characterData: false
+    });
+  }
+
+  menuWidthChanged(width: number): void {
+    this.menuWidth$.next(width);
   }
 }

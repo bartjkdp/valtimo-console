@@ -1,0 +1,52 @@
+<ng-container
+  *ngIf="{
+    candidateUsers: candidateUsersForTask$ | async,
+    disabled: disabled$ | async,
+    idOnServer: assignedIdOnServer$ | async,
+    text: textContent$ | async
+  } as obs"
+>
+  <div class="container-fluid">
+    <div class="row mt-2 mb-2">
+      <div class="col-12 pl-0 d-flex flex-row align-items-center">
+        <ng-container
+          [ngTemplateOutlet]="userIdToAssign === obs.idOnServer && obs.idOnServer !== null ? unassignUser : assignUser"
+          [ngTemplateOutletContext]="{ obs: obs }"
+        >
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #unassignUser let-obs="obs">
+  <h5>
+    {{ obs.text.assignedTo }}
+    <b>
+      {{ getAssignedUserName(obs.candidateUsers, obs.idOnServer) }}
+    </b>
+  </h5>
+  <button
+    *ngIf="userIdToAssign === obs.idOnServer && obs.idOnServer !== null"
+    type="button"
+    class="close p-0 m-0 ml-2 d-flex text-danger"
+    aria-label="Close"
+    (click)="unassignTask()"
+    [disabled]="obs.disabled || userIdToAssign === null || userIdToAssign !== obs.idOnServer"
+    [title]="obs.text.remove"
+  >
+    <i class="fa fa-times text-danger"></i>
+  </button>
+</ng-template>
+
+<ng-template #assignUser let-obs="obs">
+  <valtimo-searchable-dropdown
+    [style]="'underlinedText'"
+    [items]="mapUsersForDropdown(obs.candidateUsers)"
+    [buttonText]="obs.text.header"
+    [searchText]="obs.text.searchText"
+    [noResultsText]="obs.text.noResults"
+    [disabled]="obs.disabled"
+    (itemSelected)="assignTask($event)"
+  ></valtimo-searchable-dropdown>
+</ng-template>

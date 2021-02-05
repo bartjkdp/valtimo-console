@@ -20,6 +20,8 @@ import {BpmnElement} from '@valtimo/contract';
 import {ConfigService} from '@valtimo/config';
 import {ModalComponent} from '@valtimo/components';
 
+interface ModalParams { element: BpmnElement, processDefinitionKey: string }
+
 @Component({
   selector: 'valtimo-form-link',
   templateUrl: './form-link.component.html',
@@ -32,10 +34,15 @@ export class FormLinkComponent {
   constructor(private configService: ConfigService) {
   }
 
-  openModal(params: { element: BpmnElement, processDefinitionKey: string }) {
+  openModal(params: ModalParams) {
     const element = params.element;
     const selector = 'form-links';
     const section = 'openzaak-service-task-connector-modal';
+
+    this.getModal(params, element, selector, section);
+  }
+
+  private getModal(params: ModalParams, element: BpmnElement, selector: string, section: string): void {
     if (element.type === 'bpmn:ServiceTask') {
       const extension = this.configService.getSupportedExtensionPoint(selector, selector, section);
       const componentRef =
@@ -45,8 +52,11 @@ export class FormLinkComponent {
         component.openModal(params);
       }
     } else {
-      this.formLinkModal.openModal(params.element, params.processDefinitionKey);
+      this.openFormLinkModal(params);
     }
   }
 
+  private openFormLinkModal(params: ModalParams): void {
+    this.formLinkModal.openModal(params.element, params.processDefinitionKey);
+  }
 }

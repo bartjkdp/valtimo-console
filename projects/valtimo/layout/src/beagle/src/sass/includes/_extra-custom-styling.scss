@@ -1,0 +1,49 @@
+/*------------------------------------------------------------------
+[Extra custom style]
+*/
+
+.be-top-header .be-navbar-header .navbar-brand {
+  background-size: $logo-width $logo-height;
+}
+
+.bg-light {
+  background-color: $gray-150 !important;
+}
+
+.page-head {
+  padding: 25px 40px 10px !important;
+  padding-bottom: 0 !important;
+}
+
+.title {
+  font-weight: $font-weight-normal;
+  color: $black;
+  margin-bottom: 1.5rem;
+  height: 20px;
+}
+
+.btn-default {
+  background-color: $white !important;
+  color: #404040 !important;
+  border-color: $gray-200 !important;
+}
+
+.switch-button {
+  label {
+    &:before {
+      content: "O";
+    }
+  }
+
+  input[type="checkbox"]:checked + span {
+    label {
+      &:before {
+        content: "I";
+      }
+    }
+  }
+}
+
+.nav-tabs > li.nav-item a.nav-link {
+  cursor: pointer;
+}
