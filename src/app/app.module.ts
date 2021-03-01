@@ -15,7 +15,7 @@
  */
 
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {Injector, NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {AppRoutingModule} from './app-routing.module';
@@ -24,7 +24,16 @@ import {LayoutModule} from '@valtimo/layout';
 import {TaskModule} from '@valtimo/task';
 import {environment} from '../environments/environment';
 import {SecurityModule} from '@valtimo/security';
-import {BpmnJsDiagramModule, CardModule, FormIoModule, MenuModule, UploaderModule, WidgetModule} from '@valtimo/components';
+import {
+  BpmnJsDiagramModule,
+  CardModule,
+  FormIoModule,
+  FormIoUploaderComponent,
+  MenuModule,
+  registerFormioUploadComponent,
+  UploaderModule,
+  WidgetModule
+} from '@valtimo/components';
 import {ChoicefieldModule} from '@valtimo/choicefield';
 import {
   DefaultTabs,
@@ -105,7 +114,6 @@ export function tabsFactory() {
       tabsFactory
     ),
     ProcessModule,
-    ViewConfiguratorModule,
     BpmnJsDiagramModule,
     FormsModule,
     ReactiveFormsModule,
@@ -122,20 +130,22 @@ export function tabsFactory() {
     UploaderModule,
     ManagementContextModule,
     AnalyseModule,
-    ExternalConnectorModule,
     SwaggerModule,
     ProcessManagementModule,
     DecisionModule,
     FormLinkModule,
     FormManagementModule,
     DossierManagementModule,
-    OpenZaakModule
+    OpenZaakModule,
   ],
   providers: [
     FormioComponent
   ],
-  entryComponents: [CustomFormExampleComponent, StartProcessCustomFormComponent],
+  entryComponents: [CustomFormExampleComponent, StartProcessCustomFormComponent, FormIoUploaderComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  constructor(injector: Injector) {
+    registerFormioUploadComponent(injector);
+  }
 }

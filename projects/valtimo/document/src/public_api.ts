@@ -17,7 +17,6 @@
 /*
  * Public API Surface of document
  */
-
 export * from './lib/document.service';
 export * from './lib/document.module';
 export * from './lib/document-search-request';

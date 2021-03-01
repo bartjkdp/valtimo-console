@@ -20,15 +20,30 @@ import {FormioComponent} from './form-io.component';
 import {FormioBuilderComponent} from './form-io-builder.component';
 import {FormioAppConfig, FormioModule} from 'angular-formio';
 import {AppConfig} from './formio-config';
+import {FormIoUploaderComponent} from './form-io-uploader/form-io-uploader.component';
+import {FormIoS3Service} from './services/form-io-s3.service';
+import {FormIoStateService} from './services/form-io-state.service';
+import {DropzoneModule} from '../dropzone/dropzone.module';
+import {TranslateModule} from '@ngx-translate/core';
+import {DocumentModule} from '@valtimo/document';
+import {FormIoDomService} from './services/form-io-dom.service';
+import {FileSizeModule} from '../file-size/file-size.module';
 
 @NgModule({
   imports: [
     CommonModule,
-    FormioModule
+    FormioModule,
+    DropzoneModule,
+    TranslateModule,
+    DocumentModule,
+    FileSizeModule
   ],
-  declarations: [FormioComponent, FormioBuilderComponent],
-  exports: [FormioComponent, FormioBuilderComponent],
+  declarations: [FormioComponent, FormioBuilderComponent, FormIoUploaderComponent],
+  exports: [FormioComponent, FormioBuilderComponent, FormIoUploaderComponent],
   providers: [
+    FormIoS3Service,
+    FormIoStateService,
+    FormIoDomService,
     {provide: FormioAppConfig, useValue: AppConfig}
   ],
 })

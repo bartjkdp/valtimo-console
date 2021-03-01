@@ -17,3 +17,7 @@
 .c-default {
   cursor: default;
 }
+
+.sub-item {
+  cursor: pointer;
+}

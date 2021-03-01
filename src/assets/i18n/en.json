@@ -40,7 +40,7 @@
   },
   "dashboard": {
     "openTasks": {
-      "title": "Open tasks"
+      "title": "All tasks"
     },
     "openTask": {
       "title": "Open task"
@@ -158,13 +158,27 @@
     "save": "Save",
     "addMore": "Add another",
     "gotoDossierManagementButton": "Configure now",
-    "selectDocumentDefinitionName": "Select the Document Definition",
+    "selectDocumentDefinitionName": "Select the Case Definition",
     "selectedZaakType": "Selected zaak type",
     "selectZaakOperation": "Select which action you want to take on the zaak",
     "selectZaakStatus": "Select a zaak status",
     "noZaakStatusConfigured": "No zaak status available go to Open Zaak to create a zaak status",
     "selectZaakResult": "Select a zaak result",
     "noZaakResultConfigured": "No zaak result available go to Open Zaak to create a zaak result"
+  },
+  "task-list": {
+    "mine": {
+      "title": "My tasks",
+      "description": "Overview of all tasks assigned to you"
+    },
+    "open": {
+      "title": "Unassigned tasks",
+      "description": "Overview of all unassigned tasks"
+    },
+    "all": {
+      "title": "All tasks",
+      "description": "Overview of all tasks"
+    }
   },
   "Task": "Task",
   "Tasks": "Tasks",
@@ -209,6 +223,14 @@
   "Process migration": "Process migration",
   "Dossier": "Case",
   "Dossiers": "Cases",
+  "document definition": "Case-definition",
+  "Upload document definition": "Upload case-definition",
+  "Remove document definition": "Remove case-definition",
+  "remove-document-definition-confirmation": "Warning: <br/><br/> This case-definition and all related cases will be removed. Linked processes will be unlinked.<br/> Please note that removing a case-definition and its cases cannot be reversed",
+  "remove-document-definition-confirmation-button": "Remove",
+  "remove-document-definition-success": "Removed case-definition",
+  "Download document definition": "Download case-definition",
+  "Select a document definition": "Select a file to upload",
   "Overview of all Dossiers": "Overview of all Cases",
   "Start Dossier": "Create New Case",
   "Dossier details": "Case details",
@@ -220,13 +242,14 @@
   "Download": "Download",
   "Upload": "Upload",
   "openZaak": {
+    "links": "OpenZaak links",
     "error": {
-      "configNotFound": "Open Zaak configuration not found, go to Admin > Open Zaak"
+      "configNotFound": "OpenZaak configuration not found, go to Admin > Open Zaak"
     }
   },
   "interface": {
     "mainMenu": "Main menu",
-    "toggleMenu": "Toggle menu",
+    "toggleMenu": "Menu",
     "typeToSearch": "Type here to search",
     "noSearchResults": "No results"
   },
@@ -236,5 +259,39 @@
     "placeholder": "Select a user",
     "remove": "Unassign",
     "save": "Save"
+  },
+  "dropzone": {
+    "drop": "Choose a file or drag it here",
+    "maxFileSize": "Maximum file size: ",
+    "jsonDocDef": "The case definition must be in the JSON format",
+    "error": {
+      "tooBig": "The file you tried to submit is too large",
+      "wrongType": "The filetype of the file you tried to submit is not supported",
+      "generic": "Something went wrong. Please try again.",
+      "invalidDocDef": "The case definition could not be uploaded. Please try again."
+    }
+  },
+  "fieldLabels": {
+    "referenceNumber": "Reference number",
+    "createdBy": "Created by",
+    "createdOn": "Created on",
+    "lastModified": "Last modified",
+    "files": "Files",
+    "firstName": "First name"
+  },
+  "list": {
+    "currentPage": "Page {{current}} of {{total}}",
+    "show": "Show",
+    "entries": "entries",
+    "noMatchingItems": "No matching items found for ",
+    "noFieldDefinitions": "No fields definitions defined",
+    "noResults": "No result found",
+    "showingResults": "Showing {{number}} of {{total}} results",
+    "showingResult": "Showing {{number}} result"
+  },
+  "webcam": {
+    "takePicture": "Take picture",
+    "save": "Save",
+    "redo": "Redo"
   }
 }

@@ -18,13 +18,15 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {UploaderComponent} from './uploader.component';
 import {UploaderDragDropDirective} from './uploader-drag-drop.directive';
-import {FileSizePipe} from './filesize.pipe';
+import {FileSizeModule} from '../file-size/file-size.module';
 
 @NgModule({
-  declarations: [UploaderComponent, UploaderDragDropDirective, FileSizePipe],
+  declarations: [UploaderComponent, UploaderDragDropDirective],
   imports: [
-    CommonModule
+    CommonModule,
+    FileSizeModule
   ],
-  exports: [UploaderComponent, UploaderDragDropDirective, FileSizePipe]
+  exports: [UploaderComponent, UploaderDragDropDirective]
 })
-export class UploaderModule { }
+export class UploaderModule {
+}

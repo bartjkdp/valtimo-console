@@ -2,16 +2,17 @@
   *ngIf="{
     candidateUsers: candidateUsersForTask$ | async,
     disabled: disabled$ | async,
-    idOnServer: assignedIdOnServer$ | async,
-    text: textContent$ | async
+    emailOnServer: assignedEmailOnServer$ | async
   } as obs"
 >
-  <div class="container-fluid">
+  <div class="container-fluid" *ngIf="obs.candidateUsers">
     <div class="row mt-2 mb-2">
       <div class="col-12 pl-0 d-flex flex-row align-items-center">
         <ng-container
-          [ngTemplateOutlet]="userIdToAssign === obs.idOnServer && obs.idOnServer !== null ? unassignUser : assignUser"
-          [ngTemplateOutletContext]="{ obs: obs }"
+          [ngTemplateOutlet]="
+            userEmailToAssign === obs.emailOnServer && obs.emailOnServer !== null ? unassignUser : assignUser
+          "
+          [ngTemplateOutletContext]="{obs: obs}"
         >
         </ng-container>
       </div>
@@ -21,19 +22,19 @@
 
 <ng-template #unassignUser let-obs="obs">
   <h5>
-    {{ obs.text.assignedTo }}
+    {{ 'assignTask.assignedTo' | translate }}
     <b>
-      {{ getAssignedUserName(obs.candidateUsers, obs.idOnServer) }}
+      {{ assignedUserFullName$ | async }}
     </b>
   </h5>
   <button
-    *ngIf="userIdToAssign === obs.idOnServer && obs.idOnServer !== null"
+    *ngIf="userEmailToAssign === obs.emailOnServer && obs.emailOnServer !== null"
     type="button"
     class="close p-0 m-0 ml-2 d-flex text-danger"
     aria-label="Close"
     (click)="unassignTask()"
-    [disabled]="obs.disabled || userIdToAssign === null || userIdToAssign !== obs.idOnServer"
-    [title]="obs.text.remove"
+    [disabled]="obs.disabled || userEmailToAssign === null || userEmailToAssign !== obs.emailOnServer"
+    [title]="'assignTask.remove' | translate"
   >
     <i class="fa fa-times text-danger"></i>
   </button>
@@ -43,9 +44,9 @@
   <valtimo-searchable-dropdown
     [style]="'underlinedText'"
     [items]="mapUsersForDropdown(obs.candidateUsers)"
-    [buttonText]="obs.text.header"
-    [searchText]="obs.text.searchText"
-    [noResultsText]="obs.text.noResults"
+    [buttonText]="'assignTask.header' | translate"
+    [searchText]="'interface.typeToSearch' | translate"
+    [noResultsText]="'interface.noSearchResults' | translate"
     [disabled]="obs.disabled"
     (itemSelected)="assignTask($event)"
   ></valtimo-searchable-dropdown>

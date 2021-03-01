@@ -25,7 +25,6 @@ import {ConfigService} from '@valtimo/config';
   providedIn: 'root'
 })
 export class UserProviderService implements UserService, EmailNotificationService {
-
   private readonly userService: UserService;
   private valtimoApiConfig: {
     endpointUri: string;
@@ -57,6 +56,15 @@ export class UserProviderService implements UserService, EmailNotificationServic
     return this.userService.getToken();
   }
 
+  async updateToken(minValidity: number): Promise<boolean> {
+    this.logger.debug('Delegating UserProviderService::updateToken');
+    if (this.userService.updateToken) {
+      return this.userService.updateToken(minValidity);
+    } else {
+      return new Promise(resolve => resolve(true));
+    }
+  }
+
   public getEmailNotificationSettings(): Observable<EmailNotificationSettings> {
     this.logger.debug('getEmailNotificationSettings');
     return this.http.get<EmailNotificationSettings>(`${this.valtimoApiConfig.endpointUri}email-notification-settings`);
@@ -64,7 +72,9 @@ export class UserProviderService implements UserService, EmailNotificationServic
 
   public updateEmailNotificationSettings(settings: EmailNotificationSettings): Observable<EmailNotificationSettings> {
     this.logger.debug('updateEmailNotificationSettings', settings);
-    return this.http.put<EmailNotificationSettings>(`${this.valtimoApiConfig.endpointUri}email-notification-settings`, settings);
+    return this.http.put<EmailNotificationSettings>(
+      `${this.valtimoApiConfig.endpointUri}email-notification-settings`,
+      settings
+    );
   }
-
 }

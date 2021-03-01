@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
-import { TaskService } from '../task.service';
+import {Component, OnDestroy, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Router} from '@angular/router';
+import {TaskService} from '../task.service';
 import * as moment_ from 'moment';
-import { Task, TaskList } from '@valtimo/contract';
-import { NGXLogger } from 'ngx-logger';
-import { TaskDetailModalComponent } from '../task-detail-modal/task-detail-modal.component';
+import {Task, TaskList} from '@valtimo/contract';
+import {NGXLogger} from 'ngx-logger';
+import {TaskDetailModalComponent} from '../task-detail-modal/task-detail-modal.component';
+import {TranslateService} from '@ngx-translate/core';
+import {combineLatest, Subscription} from 'rxjs';
 
 const moment = moment_;
 moment.locale(localStorage.getItem('langKey') || 'en');
@@ -31,7 +33,7 @@ moment.locale(localStorage.getItem('langKey') || 'en');
   styleUrls: ['./task-list.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class TaskListComponent {
+export class TaskListComponent implements OnDestroy {
   @ViewChild('taskDetail') taskDetail: TaskDetailModalComponent;
   public tasks = {
     mine: new TaskList(),
@@ -41,18 +43,25 @@ export class TaskListComponent {
   public currentTaskType = 'mine';
   public listTitle: string | null = null;
   public listDescription: string | null = null;
+  private translationSubscription: Subscription;
 
   public paginationClicked(page: number, type: string) {
     this.tasks[type].page = page - 1;
     this.getTasks(type);
   }
 
-  constructor(private taskService: TaskService, private router: Router, private logger: NGXLogger) {}
+  constructor(
+    private taskService: TaskService,
+    private router: Router,
+    private logger: NGXLogger,
+    private translateService: TranslateService
+  ) {
+  }
 
   paginationSet() {
     this.tasks.mine.pagination.size = this.tasks.all.pagination.size = this.tasks.open.pagination.size = this.tasks[
       this.currentTaskType
-    ].pagination.size;
+      ].pagination.size;
     this.getTasks(this.currentTaskType);
   }
 
@@ -83,24 +92,27 @@ export class TaskListComponent {
 
   getTasks(type: string) {
     let params: any;
+
+    this.translationSubscription = combineLatest([
+      this.translateService.stream(`task-list.${type}.title`),
+      this.translateService.stream(`task-list.${type}.description`)
+    ]).subscribe(([title, description]) => {
+      this.listTitle = title;
+      this.listDescription = description;
+    });
+
     switch (type) {
       case 'mine':
-        params = { page: this.tasks.mine.page, size: this.tasks.mine.pagination.size, filter: 'mine' };
+        params = {page: this.tasks.mine.page, size: this.tasks.mine.pagination.size, filter: 'mine'};
         this.currentTaskType = 'mine';
-        this.listTitle = 'My tasks';
-        this.listDescription = 'Overview of all tasks assigned to you';
         break;
       case 'open':
-        params = { page: this.tasks.open.page, size: this.tasks.open.pagination.size, filter: 'open' };
+        params = {page: this.tasks.open.page, size: this.tasks.open.pagination.size, filter: 'open'};
         this.currentTaskType = 'open';
-        this.listTitle = 'Open tasks';
-        this.listDescription = 'Overview of all open tasks';
         break;
       case 'all':
-        params = { page: this.tasks.all.page, size: this.tasks.open.pagination.size, filter: 'all' };
+        params = {page: this.tasks.all.page, size: this.tasks.open.pagination.size, filter: 'all'};
         this.currentTaskType = 'all';
-        this.listTitle = 'All tasks';
-        this.listDescription = 'Overview of all tasks';
         break;
       default:
         this.logger.fatal('Unreachable case');
@@ -111,7 +123,6 @@ export class TaskListComponent {
       this.tasks[type].tasks = <Task[]>results.body;
       this.tasks[type].tasks.map((task: Task) => {
         task.created = moment(task.created).format('DD MMM YYYY HH:mm');
-        task.assignee = task.assignee ? JSON.parse(task.assignee).assignee : '';
         if (task.due) {
           task.due = moment(task.due).format('DD MMM YYYY HH:mm');
         }
@@ -126,7 +137,7 @@ export class TaskListComponent {
           label: 'Name'
         },
         {
-          key: 'assignee',
+          key: 'valtimoAssignee.fullName',
           label: 'Assignee'
         },
         {
@@ -144,4 +155,9 @@ export class TaskListComponent {
       return false;
     }
   }
+
+  ngOnDestroy(): void {
+    this.translationSubscription.unsubscribe();
+  }
+
 }

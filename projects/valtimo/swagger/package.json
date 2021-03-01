@@ -1,6 +1,6 @@
 {
   "name": "@valtimo/swagger",
-  "version": "2.0.2",
+  "version": "3.2.0",
   "peerDependencies": {
     "@angular/common": "^10.0.11",
     "@angular/core": "^10.0.11"

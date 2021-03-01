@@ -15,9 +15,16 @@
   -->
 
 <div>
-  <a class="toggle-filter-sidebar"
-     data-toggle="tooltip" data-trigger="hover" data-placement="right" title="Show / hide"
-     href="javascript:void(0)" (click)="toggleFilterSidebar()">
+  <a
+    class="toggle-filter-sidebar"
+    data-toggle="tooltip"
+    data-trigger="hover"
+    data-placement="right"
+    title="Show / hide"
+    href="javascript:void(0)"
+    (click)="toggleFilterSidebar()"
+    [ngClass]="this.filterSidebar === 'show' && 'toggle-expanded'"
+  >
     <div class="icon-container p-0 bg-transparent">
       <i class="click-able icon shadow mdi mdi-filter-list"></i>
     </div>

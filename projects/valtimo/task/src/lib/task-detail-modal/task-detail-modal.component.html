@@ -50,7 +50,7 @@
   <valtimo-assign-user-to-task
     *ngIf="task && assignmentOfTaskChanged"
     [taskId]="task.id"
-    [assigneeId]="task.assignee"
+    [assigneeEmail]="task.assignee"
     (assignmentOfTaskChanged)="assignmentOfTaskChanged.emit()"
   ></valtimo-assign-user-to-task>
 </ng-template>

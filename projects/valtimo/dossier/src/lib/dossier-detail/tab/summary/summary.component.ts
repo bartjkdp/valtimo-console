@@ -21,7 +21,13 @@ import {DocumentService} from '@valtimo/document';
 import {TaskDetailModalComponent, TaskService} from '@valtimo/task';
 import {S3Service} from '@valtimo/s3';
 import {FormService} from '@valtimo/form';
-import {Document, FormioOptionsImpl, ProcessDocumentInstance, ProcessInstanceTask, ValtimoFormioOptions} from '@valtimo/contract';
+import {
+  Document,
+  FormioOptionsImpl,
+  ProcessDocumentInstance,
+  ProcessInstanceTask,
+  ValtimoFormioOptions
+} from '@valtimo/contract';
 
 import * as moment_ from 'moment';
 import {FormioForm} from 'angular-formio';
@@ -38,7 +44,6 @@ moment.defaultFormat = 'DD MMM YYYY HH:mm';
   encapsulation: ViewEncapsulation.None
 })
 export class DossierDetailTabSummaryComponent implements OnInit {
-
   public readonly documentDefinitionName: string;
   public document: Document;
   public documentId: string;
@@ -79,12 +84,11 @@ export class DossierDetailTabSummaryComponent implements OnInit {
     this.documentService.getDocument(this.documentId).subscribe(document => {
       this.document = document;
     });
-    this.formService.getFormDefinitionByNamePreFilled(
-      `${this.documentDefinitionName}.summary`,
-      this.documentId
-    ).subscribe(formDefinition => {
-      this.formDefinition = formDefinition;
-    });
+    this.formService
+      .getFormDefinitionByNamePreFilled(`${this.documentDefinitionName}.summary`, this.documentId)
+      .subscribe(formDefinition => {
+        this.formDefinition = formDefinition;
+      });
     this.userProviderService.getUserSubject().subscribe(user => {
       this.roles = user.roles;
       this.tasks = [];
@@ -104,7 +108,6 @@ export class DossierDetailTabSummaryComponent implements OnInit {
   private loadProcessInstanceTasks(processInstanceId: string) {
     this.processService.getProcessInstanceTasks(processInstanceId).subscribe(tasks => {
       tasks.forEach(task => {
-        task.assignee = task.assignee ? JSON.parse(task.assignee).assignee : '';
         task.createdUnix = this.moment(task.created).unix();
         task.created = this.moment(task.created).format('DD MMM YYYY HH:mm');
         task.isLocked = () => {
@@ -128,5 +131,4 @@ export class DossierDetailTabSummaryComponent implements OnInit {
   public rowTaskClick(task: any) {
     this.taskDetail.openTaskDetails(task);
   }
-
 }

@@ -16,22 +16,26 @@
 
 <ul class="sidebar-elements">
   <ng-container *ngFor="let menuItem of menuItems">
-    <li [class.parent]="menuItem.children"
-            [hidden]="!menuItem.show"
-            [routerLinkActive]="'active'"
-            [routerLinkActiveOptions]="{exact: true}">
-      <a *ngIf="menuItem.link" [routerLink]="menuItem.link">
+    <li
+      [class.parent]="menuItem.children"
+      [hidden]="!menuItem.show"
+      [routerLinkActive]="'active'"
+      [routerLinkActiveOptions]="{exact: true}"
+    >
+      <a *ngIf="menuItem.link" [routerLink]="menuItem.link" class="sub-item">
         <valtimo-menu-item-text [menuItem]="menuItem"></valtimo-menu-item-text>
       </a>
-      <a *ngIf="!menuItem.link">
+      <a *ngIf="!menuItem.link" class="sub-item">
         <valtimo-menu-item-text [menuItem]="menuItem"></valtimo-menu-item-text>
       </a>
       <ng-container *ngIf="menuItem.children">
         <ul class="sub-menu">
           <li class="title">{{ menuItem.title | translate }}</li>
-          <li *ngFor="let subMenuItem of menuItem.children"
-                  [routerLinkActive]="'active'"
-                  [routerLinkActiveOptions]="{exact: true}">
+          <li
+            *ngFor="let subMenuItem of menuItem.children"
+            [routerLinkActive]="'active'"
+            [routerLinkActiveOptions]="{exact: true}"
+          >
             <a *ngIf="subMenuItem.link" [routerLink]="subMenuItem.link">
               <valtimo-submenu-item-text [submenuItem]="subMenuItem"></valtimo-submenu-item-text>
             </a>

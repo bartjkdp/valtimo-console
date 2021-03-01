@@ -68,7 +68,8 @@
               "node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js",
               "node_modules/select2/dist/js/select2.min.js",
               "dist/valtimo/layout/assets/js/app.js",
-              "src/assets/bpmn/ValtimoBPMNModeler.js"
+              "src/assets/bpmn/ValtimoBPMNModeler.js",
+              "node_modules/@webcomponents/custom-elements/src/native-shim.js"
             ],
             "allowedCommonJsDependencies": [
               "swagger-ui",

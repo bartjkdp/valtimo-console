@@ -28,11 +28,27 @@
 }
 
 .icon-container .icon {
-  background-color: #FFF;
-  color:#6b6b6b;
+  background-color: #fff;
+  color: #6b6b6b;
 }
 
-
 .toggle-filter-sidebar:hover .icon-container .icon {
-  color:#ff5800;
+  color: #ff5800;
+}
+
+@media screen and (min-width: 768px) {
+  .toggle-filter-sidebar {
+    margin-left: -25px;
+  }
+
+  .page-aside {
+    position: absolute;
+    left: 0;
+    margin-top: 0;
+    height: calc(100vh - 61px);
+  }
+
+  .toggle-expanded {
+    margin-left: 255px;
+  }
 }

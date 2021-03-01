@@ -35,9 +35,9 @@
         </div>
         <div tabs>
           <ngb-tabset [destroyOnHide]="false" (tabChange)="tabChange($event)">
-            <ngb-tab id="ngb-tab-0" title="My tasks"> </ngb-tab>
-            <ngb-tab id="ngb-tab-1" title="Open tasks"> </ngb-tab>
-            <ngb-tab id="ngb-tab-2" title="All tasks"> </ngb-tab>
+            <ngb-tab id="ngb-tab-0" [title]="'task-list.mine.title' | translate"> </ngb-tab>
+            <ngb-tab id="ngb-tab-1" [title]="'task-list.open.title' | translate"> </ngb-tab>
+            <ngb-tab id="ngb-tab-2" [title]="'task-list.all.title' | translate"> </ngb-tab>
           </ngb-tabset>
         </div>
       </valtimo-list>

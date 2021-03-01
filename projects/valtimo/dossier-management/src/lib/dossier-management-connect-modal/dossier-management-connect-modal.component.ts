@@ -30,7 +30,7 @@ export class DossierManagementConnectModalComponent implements OnInit {
   public documentDefinition: DocumentDefinition | null = null;
   public processDefinitions: ProcessDefinition[];
   public newDocumentProcessDefinition: ProcessDefinition | null = null;
-  public newDocumentProcessDefinitionInit = false;
+  public newDocumentProcessDefinitionInit = true;
   public processDocumentDefinitionExists: any = {};
   @Output() public reloadProcessDocumentDefinitions = new EventEmitter<any>();
   @ViewChild('dossierConnectModal') modal: ModalComponent;
@@ -65,7 +65,7 @@ export class DossierManagementConnectModalComponent implements OnInit {
   openModal(dossier: DocumentDefinition) {
     this.documentDefinition = dossier;
     this.newDocumentProcessDefinition = null;
-    this.newDocumentProcessDefinitionInit = false;
+    this.newDocumentProcessDefinitionInit = true;
     this.loadProcessDocumentDefinitions();
     this.modal.show();
   }

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { DropdownItem, User, ValtimoUserIdentity } from '@valtimo/contract';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { TaskService } from '../task.service';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {DropdownItem, User} from '@valtimo/contract';
+import {BehaviorSubject, combineLatest} from 'rxjs';
+import {take, tap} from 'rxjs/operators';
+import {TaskService} from '../task.service';
 
 @Component({
   selector: 'valtimo-assign-user-to-task',
@@ -28,72 +27,52 @@ import { TaskService } from '../task.service';
 })
 export class AssignUserToTaskComponent implements OnInit, OnChanges {
   @Input() taskId: string;
-  @Input() assigneeId: string;
+  @Input() assigneeEmail: string;
   @Output() assignmentOfTaskChanged = new EventEmitter();
 
-  readonly textContent$ = combineLatest([
-    this.translateService.stream('assignTask.header'),
-    this.translateService.stream('assignTask.placeholder'),
-    this.translateService.stream('assignTask.remove'),
-    this.translateService.stream('assignTask.save'),
-    this.translateService.stream('assignTask.assignedTo'),
-    this.translateService.stream('interface.typeToSearch'),
-    this.translateService.stream('interface.noSearchResults')
-  ]).pipe(
-    map(([header, placeholder, remove, save, assignedTo, searchText, noResults]) => ({
-      header,
-      placeholder,
-      remove,
-      save,
-      assignedTo,
-      searchText,
-      noResults
-    }))
-  );
-
-  candidateUsersForTask$: Observable<ValtimoUserIdentity[]>;
-
+  candidateUsersForTask$ = new BehaviorSubject<User[]>(undefined);
   disabled$ = new BehaviorSubject<boolean>(true);
+  assignedEmailOnServer$ = new BehaviorSubject<string>(null);
+  userEmailToAssign: string = null;
+  assignedUserFullName$ = new BehaviorSubject<string>(null);
 
-  assignedIdOnServer$ = new BehaviorSubject<string>(null);
-
-  userIdToAssign: string = null;
-
-  constructor(private taskService: TaskService, private readonly translateService: TranslateService) {}
+  constructor(private taskService: TaskService) {}
 
   ngOnInit(): void {
-    this.candidateUsersForTask$ = this.taskService.getCandidateUsers(this.taskId).pipe(
-      tap(() => {
-        if (this.assigneeId) {
-          this.assignedIdOnServer$.next(this.assigneeId);
-          this.userIdToAssign = this.assigneeId;
-        }
-        this.enable();
-      })
-    );
+    this.taskService.getCandidateUsers(this.taskId).subscribe(candidateUsers => {
+      this.candidateUsersForTask$.next(candidateUsers);
+      if (this.assigneeEmail) {
+        this.assignedEmailOnServer$.next(this.assigneeEmail);
+        this.userEmailToAssign = this.assigneeEmail;
+        this.assignedUserFullName$.next(this.getAssignedUserName(candidateUsers, this.assigneeEmail));
+      }
+      this.enable();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    const assigneeId = changes.assigneeId;
-
-    if (assigneeId) {
-      const currentUserId = assigneeId.currentValue;
-      this.assignedIdOnServer$.next(currentUserId || null);
-      this.userIdToAssign = currentUserId || null;
+    const assigneeEmail = changes.assigneeEmail;
+    if (assigneeEmail) {
+      this.candidateUsersForTask$.pipe(take(1)).subscribe(candidateUsers => {
+        const currentUserEmail = assigneeEmail.currentValue;
+        this.assignedEmailOnServer$.next(currentUserEmail || null);
+        this.userEmailToAssign = currentUserEmail || null;
+        this.assignedUserFullName$.next(this.getAssignedUserName(candidateUsers, currentUserEmail));
+      });
     } else {
       this.clear();
     }
   }
 
-  assignTask(userId: string): void {
+  assignTask(userEmail: string): void {
     this.disable();
-
-    this.taskService
-      .assignTask(this.taskId, userId)
+    combineLatest([this.candidateUsersForTask$, this.taskService.assignTask(this.taskId, {assignee: userEmail})])
       .pipe(
-        tap(() => {
-          this.userIdToAssign = userId;
-          this.assignedIdOnServer$.next(this.userIdToAssign);
+        take(1),
+        tap(([candidateUsers]) => {
+          this.userEmailToAssign = userEmail;
+          this.assignedEmailOnServer$.next(userEmail);
+          this.assignedUserFullName$.next(this.getAssignedUserName(candidateUsers, userEmail));
           this.emitChange();
           this.enable();
         })
@@ -103,7 +82,6 @@ export class AssignUserToTaskComponent implements OnInit, OnChanges {
 
   unassignTask(): void {
     this.disable();
-
     this.taskService
       .unassignTask(this.taskId)
       .pipe(
@@ -116,23 +94,27 @@ export class AssignUserToTaskComponent implements OnInit, OnChanges {
       .subscribe();
   }
 
-  getAssignedUserName(users: User[], id: string): string {
-    return users && id ? users.find((user) => user.id === id).fullName : '';
+  getAssignedUserName(users: User[], userEmail: string): string {
+    if (users && userEmail) {
+      const findUser = users.find(user => user.email === userEmail);
+      return findUser ? findUser.fullName : '';
+    }
+    return '';
   }
 
   mapUsersForDropdown(users: User[]): DropdownItem[] {
     return (
       users &&
       users
-        .map((user) => ({ ...user, lastName: user.lastName.split(' ').splice(-1)[0] }))
+        .map(user => ({...user, lastName: user.lastName.split(' ').splice(-1)[0]}))
         .sort((a, b) => a.lastName.localeCompare(b.lastName))
-        .map((user) => ({ text: user.fullName, id: user.id }))
+        .map(user => ({text: user.fullName, id: user.email}))
     );
   }
 
   private clear(): void {
-    this.assignedIdOnServer$.next(null);
-    this.userIdToAssign = null;
+    this.assignedEmailOnServer$.next(null);
+    this.userEmailToAssign = null;
   }
 
   private emitChange(): void {

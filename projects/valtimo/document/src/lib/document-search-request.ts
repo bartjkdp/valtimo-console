@@ -15,6 +15,7 @@
  */
 
 import {HttpParams} from '@angular/common/http';
+import {SortState} from '@valtimo/contract';
 
 export interface DocumentSearchRequest {
   definitionName: string;
@@ -23,10 +24,11 @@ export interface DocumentSearchRequest {
   sequence?: number;
   createdBy?: string;
   searchCriteria?: string;
-  sort?: string;
+  sort?: SortState;
 
   asHttpParams(): HttpParams;
   setPage(page: number): void;
+  getSortString(sort: SortState): string;
 }
 
 export class DocumentSearchRequestImpl implements DocumentSearchRequest {
@@ -36,7 +38,7 @@ export class DocumentSearchRequestImpl implements DocumentSearchRequest {
   sequence?: number;
   createdBy?: string;
   searchCriteria?: string;
-  sort?: string;
+  sort?: SortState;
 
   constructor(
     definitionName: string,
@@ -44,7 +46,8 @@ export class DocumentSearchRequestImpl implements DocumentSearchRequest {
     size: number,
     sequence?: number,
     createdBy?: string,
-    searchCriteria?: string
+    searchCriteria?: string,
+    sort?: SortState
   ) {
     this.definitionName = definitionName;
     this.page = page;
@@ -52,6 +55,7 @@ export class DocumentSearchRequestImpl implements DocumentSearchRequest {
     this.sequence = sequence;
     this.createdBy = createdBy;
     this.searchCriteria = searchCriteria;
+    this.sort = sort;
   }
 
   asHttpParams(): HttpParams {
@@ -60,7 +64,7 @@ export class DocumentSearchRequestImpl implements DocumentSearchRequest {
       .set('page', this.page.toString())
       .set('size', this.size.toString());
     if (this.sort) {
-      params = params.set('sort', this.sort);
+      params = params.set('sort', this.getSortString(this.sort));
     }
     if (this.sequence) {
       params = params.set('sequence', this.sequence.toString());
@@ -78,4 +82,7 @@ export class DocumentSearchRequestImpl implements DocumentSearchRequest {
     this.page = page;
   }
 
+  getSortString(sort: SortState): string {
+    return `${sort.state.name},${sort.state.direction}`;
+  }
 }

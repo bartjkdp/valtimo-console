@@ -52,6 +52,18 @@ export interface ZaakType {
   omschrijvingGeneriek?: string;
 }
 
+export interface InformatieObjectType {
+  url: string;
+  omschrijving: string;
+}
+
+export interface InformatieObjectTypeLink {
+  informatieObjectTypeLinkId: string;
+  documentDefinitionName: string;
+  zaakType: string;
+  informatieObjectType: string;
+}
+
 export interface ZaakTypeLink {
   id: string;
   documentDefinitionName: string;
@@ -69,11 +81,18 @@ export interface CreateZaakTypeLinkRequest {
   zaakTypeUrl: string;
 }
 
+export interface CreateInformatieObjectTypeLinkRequest {
+  documentDefinitionName: string;
+  zaakType: string;
+  informatieObjectType: string;
+}
+
 export interface ZaakInstanceLink {
   zaakInstanceUrl: string;
   zaakInstanceId: string;
   documentId: string;
 }
+
 export interface ServiceTaskHandlerRequest {
   serviceTaskId: string;
   operation: Operation;

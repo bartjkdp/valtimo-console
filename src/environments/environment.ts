@@ -22,11 +22,35 @@ import {ROLE_ADMIN, ROLE_DEVELOPER, ROLE_USER, ValtimoConfig} from '@valtimo/con
 import {authenticationKeycloak} from './auth/keycloak-config.dev';
 import {openZaakExtensionInitializer} from '@valtimo/open-zaak';
 
+const defaultDefinitionColumns = [
+  {
+    propertyName: 'sequence',
+    translationKey: 'referenceNumber',
+    sortable: true
+  },
+  {
+    propertyName: 'createdBy',
+    translationKey: 'createdBy',
+    sortable: true
+  },
+  {
+    propertyName: 'createdOn',
+    translationKey: 'createdOn',
+    sortable: true,
+    viewType: 'date',
+    default: true
+  },
+  {
+    propertyName: 'modifiedOn',
+    translationKey: 'lastModified',
+    sortable: true,
+    viewType: 'date'
+  }
+];
+
 export const environment: ValtimoConfig = {
   production: false,
-  initializers: [
-    openZaakExtensionInitializer
-  ],
+  initializers: [openZaakExtensionInitializer],
   authentication: authenticationKeycloak,
   menu: {
     menuItems: [
@@ -35,7 +59,11 @@ export const environment: ValtimoConfig = {
       {roles: [ROLE_USER], link: ['/tasks'], title: 'Tasks', iconClass: 'icon mdi mdi-check-all', sequence: 2},
       {roles: [ROLE_USER], link: ['/analysis'], title: 'Analysis', iconClass: 'icon mdi mdi-chart', sequence: 3},
       {
-        roles: [ROLE_ADMIN], title: 'Admin', iconClass: 'icon mdi mdi-tune', sequence: 4, children: [
+        roles: [ROLE_ADMIN],
+        title: 'Admin',
+        iconClass: 'icon mdi mdi-tune',
+        sequence: 4,
+        children: [
           {title: 'Basics', textClass: 'text-dark font-weight-bold c-default', sequence: 1},
           {link: ['/processes'], title: 'Processes', sequence: 2},
           {link: ['/form-management'], title: 'Forms', sequence: 3},
@@ -53,9 +81,11 @@ export const environment: ValtimoConfig = {
         ]
       },
       {
-        roles: [ROLE_DEVELOPER], title: 'Development', iconClass: 'icon mdi mdi-code', sequence: 6, children: [
-          {link: ['/swagger'], title: 'Swagger', iconClass: 'icon mdi mdi-dot-circle', sequence: 1}
-        ]
+        roles: [ROLE_DEVELOPER],
+        title: 'Development',
+        iconClass: 'icon mdi mdi-code',
+        sequence: 6,
+        children: [{link: ['/swagger'], title: 'Swagger', iconClass: 'icon mdi mdi-dot-circle', sequence: 1}]
       }
     ]
   },
@@ -74,8 +104,18 @@ export const environment: ValtimoConfig = {
   },
   definitions: {
     dossiers: []
+  },
+  openZaak: {
+    catalogus: ''
+  },
+  defaultDefinitionTable: defaultDefinitionColumns,
+  customDefinitionTables: {
+    leningen: [
+      ...defaultDefinitionColumns,
+      {propertyName: '$.voornaam', translationKey: 'firstName', sortable: false},
+      {propertyName: 'relatedFiles', translationKey: 'files', sortable: true, viewType: 'relatedFiles'}
+    ]
   }
-
 };
 
 /*

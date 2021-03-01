@@ -22,6 +22,14 @@ export const VALTIMO_CONFIG = new InjectionToken<ValtimoConfig>('valtimoConfig')
 
 export const INITIALIZERS = new InjectionToken<(() => Function)[]>('initializers');
 
+export interface DefinitionColumn {
+  propertyName: string;
+  translationKey: string;
+  sortable?: boolean;
+  viewType?: string;
+  default?: boolean;
+}
+
 export interface ValtimoConfig {
   initializers: ((injector: Injector) => Function)[];
   menu: MenuConfig;
@@ -39,4 +47,11 @@ export interface ValtimoConfig {
   };
   logger: any;
   definitions: any;
+  openZaak: {
+    catalogus: string;
+  };
+  defaultDefinitionTable: Array<DefinitionColumn>;
+  customDefinitionTables: {
+    [definitionNameId: string]: Array<DefinitionColumn>;
+  };
 }

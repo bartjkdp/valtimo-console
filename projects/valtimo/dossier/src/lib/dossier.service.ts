@@ -16,6 +16,7 @@
 
 import {Injectable} from '@angular/core';
 import {ConfigService} from '@valtimo/config';
+import {DefinitionColumn, SortState} from '@valtimo/contract';
 
 @Injectable({
   providedIn: 'root'
@@ -23,14 +24,26 @@ import {ConfigService} from '@valtimo/config';
 export class DossierService {
   private readonly definitions: any;
 
-  constructor(
-    configService: ConfigService
-  ) {
+  constructor(private readonly configService: ConfigService) {
     this.definitions = configService.config.definitions;
   }
 
   getImplementationEnvironmentDefinitions(name: string) {
     return this.definitions.dossiers.find(definition => definition.name === name);
+  }
+
+  getDefinitionColumns(definitionNameId: string): Array<DefinitionColumn> {
+    const config = this.configService.config;
+    const customDefinitionTable = config.customDefinitionTables[definitionNameId];
+    return customDefinitionTable || config.defaultDefinitionTable;
+  }
+
+  getInitialSortState(columns: Array<DefinitionColumn>): SortState {
+    const defaultColumn = columns.find(column => column.default);
+    return {
+      isSorting: false,
+      state: {name: defaultColumn ? defaultColumn.propertyName : columns[0].propertyName, direction: 'DESC'}
+    };
   }
 
 }

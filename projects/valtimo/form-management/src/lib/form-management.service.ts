@@ -38,10 +38,6 @@ export class FormManagementService {
     return this.http.get<FormDefinition>(`${this.valtimoApiConfig.endpointUri}form-management/${formDefinitionId}`);
   }
 
-  getFormDefinitions(): Observable<FormDefinition[]> {
-    return this.http.get<FormDefinition[]>(`${this.valtimoApiConfig.endpointUri}form-management`);
-  }
-
   queryFormDefinitions(params?: any): Observable<any> {
     return this.http.get(`${this.valtimoApiConfig.endpointUri}form-management`, {observe: 'response', params: params});
   }

@@ -14,6 +14,20 @@
   ~ limitations under the License.
   -->
 
+<div class="input-group mt-7 mb-2 align-items-center">
+  <div *ngIf="selectedZaakType"><h2>{{ 'openZaak.links' | translate }}</h2></div>
+</div>
+<div *ngIf="selectedZaakType" class="input-group mt-5 mb-3 align-items-center">
+  <input class="form-control"
+         [value]="selectedZaakType.omschrijving"
+         type="text"
+         disabled
+  />
+  <button class="btn btn-danger ml-2 mb-0" (click)="removeZaakTypeLink()">
+    <i class="fa fa-trash"></i>
+  </button>
+</div>
+
 <valtimo-modal
         #openZaakTypeLinkModal
         elementId="openZaakTypeLinkModal"
@@ -23,13 +37,21 @@
 >
   <div body>
     <p>
-      Select zaak type for dossier
+      Select zaak type for {{ 'Dossier' | translate }}
     </p>
-    <div class="input-group mb-3 align-items-center">
+    <div class="input-group mb-3 mr-3 align-items-center">
       <select class="form-control" [(ngModel)]="selectedZaakType">
         <option [ngValue]="null" selected>Select zaak type</option>
         <option *ngFor="let zaakType of zaakTypes" [ngValue]="zaakType">
           {{zaakType.omschrijving}}
+        </option>
+      </select>
+    </div>
+    <div *ngIf="selectedZaakType" class="input-group mb-3 align-items-center">
+      <select class="form-control" [(ngModel)]="selectedInformatieObjectTypeUrl">
+        <option [ngValue]="null" selected>Select informatie object type</option>
+        <option *ngFor="let informatieObjectType of informatieObjectTypes" [ngValue]="informatieObjectType.url">
+          {{informatieObjectType.omschrijving}}
         </option>
       </select>
     </div>
@@ -41,8 +63,10 @@
   </div>
 </valtimo-modal>
 
+<div class="text-right mt-5">
+  <button class="btn btn-primary btn-space" (click)="openModal()">
+    <i class="icon mdi mdi-plus"></i> &nbsp;
+    Link zaak type
+  </button>
+</div>
 
-<button class="btn btn-primary btn-space" (click)="openModal()">
-  <i class="icon mdi mdi-plus"></i> &nbsp;
-  Link ZaakType to Dossier
-</button>

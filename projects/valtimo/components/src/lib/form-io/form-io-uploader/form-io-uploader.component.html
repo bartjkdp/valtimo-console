@@ -1,0 +1,35 @@
+<div *ngIf="!value?.originalName; else preview" class="dropzone-container">
+  <valtimo-dropzone
+          (fileSelected)="fileSelected($event)"
+          [acceptedFiles]="null"
+          [disabled]="disabled"
+          [hideFilePreview]="true"
+          [hideTitle]="hideTitle"
+          [maxFileSize]="maxFileSize"
+          [showMaxFileSize]="!hideMaxFileSize"
+          [subtitle]="subtitle"
+          [title]="title"
+          [camera]="camera"
+          [uploading]="uploading$ | async"
+  ></valtimo-dropzone>
+</div>
+
+<ng-template #preview>
+  <div class="file-preview">
+    <div class="file-preview-name">
+      <a [href]="value.url" target="_blank">
+        {{value.originalName}}
+      </a>
+    </div>
+    <div class="file-preview-size">
+      <span>
+        {{value.size | filesize}}
+      </span>
+    </div>
+    <div class="file-preview-delete">
+      <a (click)="deleteFile(value.data.s3ResourceId)">
+        <i class="icon fa fa-trash"></i>
+      </a>
+    </div>
+  </div>
+</ng-template>

@@ -17,7 +17,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {DocumentService} from '@valtimo/document';
-import {Document, RelatedFile} from '@valtimo/contract';
+import {Document, RelatedFile, S3Resource} from '@valtimo/contract';
 import {ToastrService} from 'ngx-toastr';
 import {S3Service} from '@valtimo/s3';
 
@@ -84,7 +84,7 @@ export class DossierDetailTabDocumentsComponent implements OnInit {
     });
   }
 
-  assignResource(documentResource: any) {
+  assignResource(documentResource: S3Resource) {
     this.documentService.assignResource(this.documentId, documentResource.id).subscribe(() => {
       this.toastrService.success('Successfully uploaded document to dossier');
       this.loadDocuments();

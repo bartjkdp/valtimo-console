@@ -28,10 +28,10 @@ import {
   SimpleChanges,
   ViewChildren
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { DropdownButtonStyle, DropdownItem } from '@valtimo/contract';
-import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
-import { debounceTime, take } from 'rxjs/operators';
+import {FormControl} from '@angular/forms';
+import {DropdownButtonStyle, DropdownItem} from '@valtimo/contract';
+import {BehaviorSubject, combineLatest, fromEvent, Subscription} from 'rxjs';
+import {debounceTime, take} from 'rxjs/operators';
 
 @Component({
   selector: 'valtimo-searchable-dropdown',
@@ -45,27 +45,17 @@ export class SearchableDropdownComponent implements OnInit, OnDestroy, OnChanges
   @Input() searchText: string;
   @Input() noResultsText: string;
   @Input() disabled: boolean;
-
   @Output() itemSelected = new EventEmitter();
-
   @ViewChildren('button') buttons: QueryList<ElementRef>;
 
   private readonly searchId = 'search';
-
   readonly searchTerm = new FormControl('');
-
   readonly focusedItemId$ = new BehaviorSubject<string>(this.searchId);
-
   readonly open$ = new BehaviorSubject<boolean>(false);
-
   readonly filteredItems$ = new BehaviorSubject<Array<DropdownItem>>(undefined);
-
   private wasInside = false;
-
   private keySubscription: Subscription;
-
   private searchSubscription: Subscription;
-
   private readonly mouseOnList$ = new BehaviorSubject<boolean>(false);
 
   @HostListener('click')
@@ -88,9 +78,9 @@ export class SearchableDropdownComponent implements OnInit, OnDestroy, OnChanges
 
   ngOnChanges(changes: SimpleChanges): void {
     const itemChanges = changes.items;
-    const currenItems = itemChanges.currentValue;
-    if (itemChanges && !itemChanges.previousValue && currenItems) {
-      this.filteredItems$.next(currenItems);
+    const currentItems = itemChanges.currentValue;
+    if (itemChanges && !itemChanges.previousValue && currentItems) {
+      this.filteredItems$.next(currentItems);
     }
   }
 
@@ -137,7 +127,7 @@ export class SearchableDropdownComponent implements OnInit, OnDestroy, OnChanges
           .pipe(take(1))
           .subscribe(([mouseOnList, items, focusedId]) => {
             const length = items.length;
-            const focusedIndex = items.findIndex((item) => item.id === focusedId);
+            const focusedIndex = items.findIndex(item => item.id === focusedId);
             const code = event.code;
             const shiftKey = event.shiftKey;
             const down = 'ArrowDown';
@@ -186,17 +176,17 @@ export class SearchableDropdownComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private openSearchSubscription(): void {
-    this.searchSubscription = this.searchTerm.valueChanges.subscribe((searchTerm) => {
-      this.focusedItemId$.pipe(take(1)).subscribe((focusedItemId) => {
+    this.searchSubscription = this.searchTerm.valueChanges.subscribe(searchTerm => {
+      this.focusedItemId$.pipe(take(1)).subscribe(focusedItemId => {
         if (!searchTerm) {
           this.filteredItems$.next(this.items);
         } else {
-          const filteredItems = this.items.filter((item) => item.text.toUpperCase().includes(searchTerm.toUpperCase()));
+          const filteredItems = this.items.filter(item => item.text.toUpperCase().includes(searchTerm.toUpperCase()));
 
           this.filteredItems$.next(filteredItems);
 
           // move focus to search box if filtered list length is 0 or previously focused item is not in filtered list anymore
-          if (filteredItems.length === 0 || !filteredItems.some((item) => item.id === focusedItemId)) {
+          if (filteredItems.length === 0 || !filteredItems.some(item => item.id === focusedItemId)) {
             this.resetFocus();
           }
         }
@@ -210,13 +200,14 @@ export class SearchableDropdownComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private scrollButtonIntoView(id: string): void {
-    this.filteredItems$.pipe(take(1)).subscribe((items) => {
-      const focusItemIndex = items.findIndex((item) => item.id === id);
+    this.filteredItems$.pipe(take(1)).subscribe(items => {
+      const focusItemIndex = items && items.findIndex(item => item.id === id);
       const focusedButton = this.buttons.toArray()[focusItemIndex];
 
-      if (focusedButton) {
-        focusedButton.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (items && focusedButton) {
+        focusedButton.nativeElement.scrollIntoView({behavior: 'smooth', block: 'center'});
       }
     });
   }
+
 }

@@ -60,7 +60,6 @@ export class ValtimoUserIdentity implements UserIdentity {
   get username(): string {
     return this._username;
   }
-
 }
 
 export interface UserService {
@@ -69,6 +68,8 @@ export interface UserService {
   logout(): void;
 
   getToken(): Promise<string>;
+
+  updateToken?(minValidity: number): Promise<boolean>;
 }
 
 export interface EmailNotificationService {
@@ -84,7 +85,7 @@ export interface AuthProviders {
 
 export interface Auth {
   module: any;
-  initializer: ((injector: Injector) => Function);
+  initializer: (injector: Injector) => Function;
   authProviders: AuthProviders;
   options: any;
 }

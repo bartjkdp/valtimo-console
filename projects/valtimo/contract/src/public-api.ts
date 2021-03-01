@@ -55,3 +55,5 @@ export * from './lib/config';
 export * from './lib/http-loader';
 export * from './lib/open-zaak.model';
 export * from './lib/searchable-dropdown.model';
+export * from './lib/list-sorting.model';
+export * from './lib/form-io-uploader.model';

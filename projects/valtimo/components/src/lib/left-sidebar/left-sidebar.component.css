@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+@media screen and (max-width: 767px) {
+  .be-left-sidebar {
+    width: 100% !important;
+  }
+}
+
 .be-left-sidebar .left-sidebar-toggle {
   padding: 20px;
 }
@@ -23,7 +29,76 @@
 }
 
 .be-left-sidebar .sidebar-elements > li > a.be-toggle-left-sidebar {
-  height: 40px;
+  height: 32px;
   display: flex;
   align-items: center;
+}
+
+.be-left-sidebar .left-sidebar-content {
+  padding-top: 20px;
+}
+
+.be-toggle-left-sidebar svg {
+  margin-right: 7px;
+  min-width: 21px;
+  height: auto;
+  overflow: visible;
+}
+
+.be-toggle-left-sidebar svg path {
+  transition: 0.27s ease;
+  fill: dimgray;
+}
+
+.resize-border {
+  position: absolute;
+  width: 3px;
+  height: 100%;
+  top: 0;
+  right: 0;
+  margin-right: -3px;
+  cursor: col-resize;
+  background-color: #ff5800;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.resize-hover {
+  opacity: 0.7;
+}
+
+.no-transition {
+  transition: none;
+}
+
+.d-1 {
+  d: path('M3 18v-2h13v2z');
+}
+
+.d-1-flipped {
+  d: path('M3 18v-2h11v2z');
+}
+
+.d-2 {
+  d: path('M3 13v-2h10v2H3');
+}
+
+.d-2-flipped {
+  d: path('M3 13v-2h12v2H3');
+}
+
+.d-3 {
+  d: path('M3 6h13v2H3V6');
+}
+
+.d-3-flipped {
+  d: path('M3 6h11v2H3V6');
+}
+
+.d-4 {
+  d: path('M21 15.61L19.59 17l-5.01-5 5.01-5L21 8.39 17.44 12 21 15.61');
+}
+
+.d-4-flipped {
+  d: path('M15.58 15.61L16.99 17 22 12l-5.01-5-1.41 1.39L19.14 12l-3.56 3.61');
 }

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormioSubmission, ValtimoFormioOptions } from '@valtimo/contract';
-import { UserProviderService } from '@valtimo/security';
-import { Formio, FormioForm } from 'angular-formio';
-import { FormioRefreshValue } from 'angular-formio/formio.common';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
+import {FormioSubmission, ValtimoFormioOptions} from '@valtimo/contract';
+import {UserProviderService} from '@valtimo/security';
+import {Formio, FormioComponent as FormIoSourceComponent, FormioForm} from 'angular-formio';
+import {FormioRefreshValue} from 'angular-formio/formio.common';
 import jwt_decode from 'jwt-decode';
-import { KeycloakService } from 'keycloak-angular';
-import { NGXLogger } from 'ngx-logger';
-import { from, Subscription, timer } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import {NGXLogger} from 'ngx-logger';
+import {from, Subscription, timer} from 'rxjs';
+import {switchMap, take} from 'rxjs/operators';
+import {FormIoStateService} from './services/form-io-state.service';
 
 @Component({
   selector: 'valtimo-form-io',
@@ -40,20 +40,30 @@ export class FormioComponent implements OnInit, OnChanges, OnDestroy {
 
   private tokenRefreshTimerSubscription: Subscription;
 
-  constructor(private userProviderService: UserProviderService, private keycloakService: KeycloakService, private logger: NGXLogger) {}
-
-  ngOnInit() {
-    this.formDefinition = this.form;
-    this.errors = [];
-
-    this.userProviderService.getToken().then((token: string) => {
-      this.setToken(token);
-    });
+  constructor(
+    private userProviderService: UserProviderService,
+    private logger: NGXLogger,
+    private readonly stateService: FormIoStateService) {
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    this.formDefinition = changes.form.currentValue;
+  ngOnInit() {
+    const formDefinition = this.stateService.setUploadToMultipleIfExists(this.form);
+    this.formDefinition = formDefinition;
+    this.errors = [];
+
+    if (this.formHasLegacyUpload(formDefinition)) {
+      this.setInitialToken();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const currentForm = changes.form.currentValue;
+    this.formDefinition = currentForm;
     this.reloadForm();
+
+    if (this.formHasLegacyUpload(currentForm)) {
+      this.setInitialToken();
+    }
   }
 
   ngOnDestroy(): void {
@@ -66,6 +76,8 @@ export class FormioComponent implements OnInit, OnChanges, OnDestroy {
     this.refreshForm.emit({
       form: this.formDefinition
     });
+
+    this.stateService.setComponentValue();
   }
 
   showErrors(errors: string[]) {
@@ -75,6 +87,20 @@ export class FormioComponent implements OnInit, OnChanges, OnDestroy {
   onSubmit(submission: FormioSubmission) {
     this.errors = [];
     this.submit.emit(submission);
+  }
+
+  formReady(form: FormIoSourceComponent): void {
+    this.stateService.currentForm = form;
+  }
+
+  private formHasLegacyUpload(formDefinition: any): boolean {
+    return formDefinition.components.some((component) => component.type === 'file');
+  }
+
+  private setInitialToken(): void {
+    this.userProviderService.getToken().then((token: string) => {
+      this.setToken(token);
+    });
   }
 
   private setToken(token: string): void {
@@ -96,12 +122,12 @@ export class FormioComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private refreshToken(): void {
-    from(this.keycloakService.updateToken(-1))
+    from(this.userProviderService.updateToken(-1))
       .pipe(
         switchMap(() => this.userProviderService.getToken()),
         take(1)
       )
-      .subscribe((token) => {
+      .subscribe(token => {
         this.setToken(token);
       });
   }

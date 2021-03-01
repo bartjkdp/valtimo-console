@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
+.table {
+  table-layout: fixed;
+}
+
 .click-able {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .pagination-holder {
@@ -39,7 +43,7 @@
   background-color: whitesmoke;
   border: 1px solid transparent;
   &:hover {
-    background-color: #EEE;
+    background-color: #eee;
     border: 1px solid #dee2e6;
   }
 }
@@ -48,6 +52,36 @@
   margin-bottom: 1rem;
 }
 
-th:first-child, td:first-child {
+th:first-child,
+td:first-child {
   padding-left: 25px;
+}
+
+th {
+  &.sortable {
+    cursor: pointer;
+    user-select: none;
+
+    &:after {
+      font-family: 'Font Awesome 5 Free';
+      content: ' \f0dd';
+      position: absolute;
+      margin: auto 0;
+      margin-left: 5px;
+      opacity: 0;
+      transition: all 0.15s ease;
+    }
+
+    &.is-being-sorted.ascending:after {
+      transform: rotate(-180deg);
+    }
+
+    &:hover:after {
+      opacity: 0.5;
+    }
+
+    &.is-being-sorted:after {
+      opacity: 1;
+    }
+  }
 }

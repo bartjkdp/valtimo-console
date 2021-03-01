@@ -14,16 +14,28 @@
  * limitations under the License.
  */
 
+export interface S3GetReturn {
+  url: string;
+  resource: BucketResource;
+  originalName?: string;
+}
+
 export interface BucketResource {
+  id?: string;
   key: string;
   name: string;
   sizeInBytes: number;
+  extension?: string;
+  createdOn?: Date;
 }
 
 export class S3Resource implements BucketResource {
+  id?: string = null;
   key: string;
   name: string;
   sizeInBytes: number;
+  extension?: string = null;
+  createdOn?: Date = null;
 
   constructor(
     file: File,

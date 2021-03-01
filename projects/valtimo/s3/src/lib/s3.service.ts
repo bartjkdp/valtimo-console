@@ -18,6 +18,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {ConfigService} from '@valtimo/config';
+import {BucketResource, S3GetReturn, S3Resource} from '@valtimo/contract';
 
 @Injectable({
   providedIn: 'root'
@@ -44,13 +45,13 @@ export class S3Service {
     return this.http.put(url.toString(), file, {headers: headers});
   }
 
-  public registerResource(s3ResourceDTO: any): Observable<any> {
-    return this.http.put(`${this.valtimoApiConfig.endpointUri}resource`, s3ResourceDTO);
+  public registerResource(s3ResourceDTO: S3Resource): Observable<BucketResource> {
+    return this.http.put<BucketResource>(`${this.valtimoApiConfig.endpointUri}resource`, s3ResourceDTO);
   }
 
-  public get(resourceId: string): Observable<any> {
+  public get(resourceId: string): Observable<S3GetReturn> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
-    return this.http.get(`${this.valtimoApiConfig.endpointUri}resource/${resourceId}`, {headers: headers});
+    return this.http.get<S3GetReturn>(`${this.valtimoApiConfig.endpointUri}resource/${resourceId}`, {headers: headers});
   }
 
   public delete(resourceId: string): Observable<any> {

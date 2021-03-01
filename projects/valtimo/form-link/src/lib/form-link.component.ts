@@ -20,7 +20,10 @@ import {BpmnElement} from '@valtimo/contract';
 import {ConfigService} from '@valtimo/config';
 import {ModalComponent} from '@valtimo/components';
 
-interface ModalParams { element: BpmnElement, processDefinitionKey: string }
+interface ModalParams {
+  element: BpmnElement;
+  processDefinitionKey: string;
+}
 
 @Component({
   selector: 'valtimo-form-link',

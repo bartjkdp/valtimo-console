@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
       label: 'Name'
     },
     {
-      key: 'assignee',
+      key: 'valtimoAssignee.fullName',
       label: 'Assignee'
     }
   ];
@@ -65,7 +65,6 @@ export class DashboardComponent implements OnInit {
       this.openTasks = response;
       this.openTasks.map((task) => {
         task.created = moment(task.created).format('DD MMM YYYY HH:mm');
-        task.assignee = task.assignee ? JSON.parse(task.assignee).assignee : '';
       });
     });
   }

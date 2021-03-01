@@ -52,6 +52,8 @@ export class FormLinkModalComponent implements OnInit {
   private isFormDefinitionSelected = false;
   private isAngularStateSelected = false;
   private isCustomUrlSelected = false;
+  private size = 50;
+  private totalElements = null;
   @ViewChild('formLinkModal') modal: ModalComponent;
 
   private static convertElementType(elementType: string): string | null {
@@ -77,8 +79,14 @@ export class FormLinkModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.formManagementService.getFormDefinitions().subscribe((formDefinitions: any) => {
-      this.formDefinitions = formDefinitions['content'];
+    this.formManagementService.queryFormDefinitions({size: this.size}).subscribe((results: any) => {
+      this.totalElements = results.body.totalElements;
+      if (this.size >= this.totalElements) {
+        this.formDefinitions = results.body.content;
+      } else {
+        this.size = this.totalElements;
+        this.ngOnInit();
+      }
     });
   }
 

@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ListComponent} from './list.component';
-import {CardModule} from '../card/card.module';
-import {NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
-import {ListFilterPipe} from './ListFilterPipe.directive';
+import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
+import {NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
+import {TranslateModule} from '@ngx-translate/core';
+import {CardModule} from '../card/card.module';
+import {ListComponent} from './list.component';
+import {ListFilterPipe} from './ListFilterPipe.directive';
 
 @NgModule({
   declarations: [ListComponent, ListFilterPipe],
-  imports: [
-    CommonModule,
-    CardModule,
-    NgbPaginationModule,
-    FormsModule,
-  ],
+  imports: [CommonModule, CardModule, NgbPaginationModule, FormsModule, TranslateModule],
   exports: [ListComponent, ListFilterPipe]
 })
-export class ListModule {
-}
+export class ListModule {}

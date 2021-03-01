@@ -72,9 +72,11 @@ export * from './lib/filter-sidebar/filter-sidebar.component';
 export * from './lib/filter-sidebar/filter-sidebar.module';
 
 export * from './lib/uploader/uploader.component';
-export * from './lib/uploader/filesize.pipe';
 export * from './lib/uploader/uploader-drag-drop.directive';
 export * from './lib/uploader/uploader.module';
+
+export * from './lib/file-size/file-size.module';
+export * from './lib/file-size/file-size.pipe';
 
 export * from './lib/alert/alert.component';
 export * from './lib/alert/alert.service';
@@ -96,3 +98,15 @@ export * from './lib/spinner/spinner.module';
 
 export * from './lib/searchable-dropdown/searchable-dropdown.module';
 export * from './lib/searchable-dropdown/searchable-dropdown.component';
+
+export * from './lib/dropzone/dropzone.module';
+export * from './lib/dropzone/dropzone.component';
+
+export * from './lib/form-io/form-io-uploader/form-io-uploader.component';
+export * from './lib/form-io/form-io-uploader/form-io-uploader.formio';
+
+export * from './lib/webcam/webcam.module';
+export * from './lib/webcam/webcam.component';
+
+export * from './lib/progress-bar/progress-bar.module';
+export * from './lib/progress-bar/progress-bar.component';

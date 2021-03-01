@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { Event, NavigationEnd, Router } from '@angular/router';
-import { MenuItem } from '@valtimo/contract';
-import { DocumentService } from '@valtimo/document';
-import { UserProviderService } from '@valtimo/security';
-import { NGXLogger } from 'ngx-logger';
-import { Subscription } from 'rxjs';
-import { MenuService } from './menu.service';
+import {Component, ElementRef, OnDestroy, OnInit, Renderer2} from '@angular/core';
+import {Event, NavigationEnd, Router} from '@angular/router';
+import {MenuItem} from '@valtimo/contract';
+import {Subscription} from 'rxjs';
+import {MenuService} from './menu.service';
 
 @Component({
   selector: 'valtimo-menu',
@@ -31,27 +28,24 @@ import { MenuService } from './menu.service';
 export class MenuComponent implements OnInit, OnDestroy {
   public menuItems: MenuItem[];
   private routerSubscription: Subscription;
+  private menuItemSubscription: Subscription;
 
   constructor(
     private menuService: MenuService,
     private elRef: ElementRef,
     private renderer: Renderer2,
-    private router: Router,
-    private documentService: DocumentService,
-    private userProviderService: UserProviderService,
-    private logger: NGXLogger
+    private router: Router
   ) {
   }
 
   ngOnInit(): void {
     this.openRouterSubscription();
-    this.menuItems = this.menuService.getMenuItems();
-    this.appendDossierSubMenuItems();
-    this.applyMenuRoleSecurity();
+    this.menuItemSubscription = this.menuService.menuItems$.subscribe(value => this.menuItems = value);
   }
 
   ngOnDestroy(): void {
     this.routerSubscription.unsubscribe();
+    this.menuItemSubscription.unsubscribe();
   }
 
   private openRouterSubscription(): void {
@@ -59,57 +53,6 @@ export class MenuComponent implements OnInit, OnDestroy {
       if (event instanceof NavigationEnd) {
         this.closeSubMenu();
       }
-    });
-  }
-
-  private applyMenuRoleSecurity(): void {
-    this.userProviderService.getUserSubject().subscribe(user => {
-      if (user.roles != null) {
-        this.logger.debug('applyMenuRoleSecurity');
-        const userRoles = user.roles;
-        this.menuItems.forEach((menuItem: MenuItem) => {
-          const access = this.determineRoleAccess(menuItem, userRoles);
-          this.logger.debug('Menu: check role access', menuItem.roles, access);
-          if (menuItem.show !== access) {
-            this.logger.debug('Menu: Change access', menuItem, access);
-            menuItem.show = access;
-          }
-        });
-      }
-    });
-  }
-
-  private determineRoleAccess(menuItem: MenuItem, roles: string[]): boolean {
-    if (!menuItem.roles) {
-      return true;
-    } else if (menuItem.roles.some(role => roles.includes(role))) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  private appendDossierSubMenuItems(): void {
-    this.logger.debug('appendDossierSubMenuItems');
-    this.documentService.getAllDefinitions().subscribe(definitions => {
-      const dossierMenuItems: MenuItem[] = definitions.content
-        .map((definition, index) => ({
-          link: ['/dossiers/' + definition.id.name],
-          title: definition.schema.title,
-          iconClass: 'icon mdi mdi-dot-circle',
-          sequence: index,
-          show: true
-        } as MenuItem)
-        );
-      this.logger.debug('found dossierMenuItems', dossierMenuItems);
-      const menuItemIndex = this.menuItems.findIndex(({ title }) => title === 'Dossiers');
-      if (menuItemIndex > 0) {
-        const dossierMenu = this.menuItems[menuItemIndex];
-        this.logger.debug('updating dossierMenu', dossierMenu);
-        dossierMenu.children = dossierMenu.children.concat(dossierMenuItems);
-        this.menuItems[menuItemIndex] = dossierMenu;
-      }
-      this.logger.debug('appendDossierSubMenuItems finished');
     });
   }
 

@@ -26,10 +26,11 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {ViewContentService} from '../view-content/view-content.service';
+import {SortState, Direction} from '@valtimo/contract';
 import {NGXLogger} from 'ngx-logger';
-import {fromEvent} from 'rxjs';
-import {debounceTime} from 'rxjs/operators';
+import {BehaviorSubject, fromEvent} from 'rxjs';
+import {debounceTime, take} from 'rxjs/operators';
+import {ViewContentService} from '../view-content/view-content.service';
 
 @Component({
   selector: 'valtimo-list',
@@ -37,7 +38,6 @@ import {debounceTime} from 'rxjs/operators';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnChanges, OnInit, AfterViewInit {
-
   private static PAGINATION_SIZE = 'PaginationSize';
 
   @Input() items: Array<any>;
@@ -48,10 +48,12 @@ export class ListComponent implements OnChanges, OnInit, AfterViewInit {
   @Input() header?: boolean;
   @Input() actions: any[] = [];
   @Input() paginationIdentifier?: string;
+  @Input() initialSortState: SortState;
   @Output() rowClicked: EventEmitter<any> = new EventEmitter();
   @Output() paginationClicked: EventEmitter<any> = new EventEmitter();
   @Output() paginationSet: EventEmitter<any> = new EventEmitter();
   @Output() search: EventEmitter<any> = new EventEmitter();
+  @Output() sortChanged: EventEmitter<SortState> = new EventEmitter();
 
   public headerProvided = false;
   public viewListAs: string;
@@ -59,10 +61,12 @@ export class ListComponent implements OnChanges, OnInit, AfterViewInit {
   public regExpStringRemoveUnderscore = /_/g;
   @ViewChild('searchBox') searchBox: ElementRef;
 
-  constructor(
-    private viewContentService: ViewContentService,
-    private logger: NGXLogger
-  ) {
+  readonly sort$ = new BehaviorSubject<SortState>({
+    state: {name: '', direction: 'DESC'},
+    isSorting: false
+  });
+
+  constructor(private viewContentService: ViewContentService, private logger: NGXLogger) {
     this.viewListAs = localStorage.getItem('viewListAs') || 'table';
   }
 
@@ -72,7 +76,9 @@ export class ListComponent implements OnChanges, OnInit, AfterViewInit {
       this.pagination.size = +entries;
       this.logger.debug('Pagination loaded from local storage for this list. Current: ', entries);
     } else {
-      this.logger.debug('Pagination does NOT exist in local storage for this list. Will use default. Change it to create an entry.');
+      this.logger.debug(
+        'Pagination does NOT exist in local storage for this list. Will use default. Change it to create an entry.'
+      );
     }
     this.paginationSet.emit();
   }
@@ -87,6 +93,10 @@ export class ListComponent implements OnChanges, OnInit, AfterViewInit {
   ngOnInit() {
     if (this.pagination) {
       this.loadPaginationSize();
+    }
+
+    if (this.initialSortState) {
+      this.sort$.next(this.initialSortState);
     }
   }
 
@@ -129,7 +139,10 @@ export class ListComponent implements OnChanges, OnInit, AfterViewInit {
   }
 
   public resolveObject(definition: any, obj: any) {
-    const resolvedObjValue = definition.key.split('.').reduce(function (prev, curr) {
+    const definitionKey = definition.key;
+    const customPropString = '$.';
+    const key = definitionKey.includes(customPropString) ? definitionKey.split(customPropString)[1] : definitionKey;
+    const resolvedObjValue = key.split('.').reduce(function (prev, curr) {
       return prev ? prev[curr] : null;
     }, obj || self);
     return this.viewContentService.get(resolvedObjValue, definition);
@@ -148,4 +161,33 @@ export class ListComponent implements OnChanges, OnInit, AfterViewInit {
     this.paginationClicked.emit(page);
   }
 
+  public handleFieldClick(key: string, sortable: boolean): void {
+    const desc: Direction = 'DESC';
+    const asc: Direction = 'ASC';
+
+    if (!sortable) {
+      return;
+    }
+
+    this.sort$.pipe(take(1)).subscribe(sort => {
+      let newState: SortState;
+
+      if (sort.state.name === key) {
+        if (!sort.isSorting) {
+          newState = {state: {...sort.state, direction: desc}, isSorting: true};
+        } else {
+          if (sort.state.direction === desc) {
+            newState = {...sort, state: {...sort.state, direction: asc}};
+          } else {
+            newState = {state: {...sort.state, direction: desc}, isSorting: false};
+          }
+        }
+      } else {
+        newState = {state: {name: key, direction: desc}, isSorting: true};
+      }
+
+      this.sort$.next(newState);
+      this.sortChanged.emit(newState);
+    });
+  }
 }

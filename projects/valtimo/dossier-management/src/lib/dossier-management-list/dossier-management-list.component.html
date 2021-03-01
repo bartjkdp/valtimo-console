@@ -14,20 +14,27 @@
   ~ limitations under the License.
   -->
 
-<div class="main-content">
+<div class="main-content pt-0">
   <div class="container-fluid">
+    <div class="btn-group mt-m3px mb-3 float-right">
+      <button class="btn btn-secondary btn-space mr-0" (click)="showModal()">
+        <i class="icon mdi mdi-upload"></i>&nbsp;
+        {{ 'Upload document definition' | translate }}
+      </button>
+    </div>
+    <div class="clearfix"></div>
     <valtimo-widget>
       <valtimo-list
-              [items]="dossiers"
-              [fields]="dossierFields"
-              [header]="true"
-              [viewMode]="true"
-              [isSearchable]="true"
-              [pagination]="pagination"
-              paginationIdentifier="dossierManagementList"
-              (paginationClicked)="paginationClicked($event)"
-              (paginationSet)="paginationSet()"
-              (rowClicked)="redirectToDetails($event)"
+        [items]="dossiers"
+        [fields]="dossierFields"
+        [header]="true"
+        [viewMode]="true"
+        [isSearchable]="true"
+        [pagination]="pagination"
+        paginationIdentifier="dossierManagementList"
+        (paginationClicked)="paginationClicked($event)"
+        (paginationSet)="paginationSet()"
+        (rowClicked)="redirectToDetails($event)"
       >
         <div header>
           <h3 class="list-header-title">{{ 'Dossiers' | translate }}</h3>
@@ -38,3 +45,7 @@
   </div>
 </div>
 
+<valtimo-dossier-management-upload
+  [show$]="showModal$"
+  (definitionUploaded)="paginationSet()"
+></valtimo-dossier-management-upload>

@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-import { StringTypeConverter } from './stringTypeConverter';
-import { BooleanTypeConverter } from './booleanTypeConverter';
-import { DateTypeConverter } from './dateTypeConverter';
-import { EnumTypeConverter } from './enumTypeConverter';
-import { StringReplaceUnderscoreTypeConverter } from './stringReplaceUnderscoreTypeConverter';
+import {StringTypeConverter} from './stringTypeConverter';
+import {BooleanTypeConverter} from './booleanTypeConverter';
+import {DateTypeConverter} from './dateTypeConverter';
+import {EnumTypeConverter} from './enumTypeConverter';
+import {StringReplaceUnderscoreTypeConverter} from './stringReplaceUnderscoreTypeConverter';
+import {RelatedFilesTypeConverter} from './relatedFilesTypeConverter';
 
 const stringTypeConverter = new StringTypeConverter();
 const booleanTypeConverter = new BooleanTypeConverter();
 const dateTypeConverter = new DateTypeConverter();
 const enumTypeConverter = new EnumTypeConverter();
 const stringReplaceUnderscoreTypeConverter = new StringReplaceUnderscoreTypeConverter();
+const relatedFilesTypeConverter = new RelatedFilesTypeConverter();
 
 // TODO: Via injection
 export const TYPE_CONVERTERS: Array<TypeConverter> = [
@@ -32,7 +34,9 @@ export const TYPE_CONVERTERS: Array<TypeConverter> = [
   booleanTypeConverter,
   dateTypeConverter,
   enumTypeConverter,
-  stringReplaceUnderscoreTypeConverter];
+  stringReplaceUnderscoreTypeConverter,
+  relatedFilesTypeConverter
+];
 
 export interface TypeConverter {
   getTypeString(): string;

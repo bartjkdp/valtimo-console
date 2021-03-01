@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { ProcessDocumentDefinition } from '@valtimo/contract';
-import { DocumentSearchRequest, DocumentSearchRequestImpl, DocumentService } from '@valtimo/document';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+import {DefinitionColumn, ProcessDocumentDefinition, SortState} from '@valtimo/contract';
+import {DocumentSearchRequest, DocumentSearchRequestImpl, DocumentService} from '@valtimo/document';
 import * as momentImported from 'moment';
-import { Subscription } from 'rxjs';
-import { DefaultTabs } from '../dossier-detail-tab-enum';
-import { DossierProcessStartModalComponent } from '../dossier-process-start-modal/dossier-process-start-modal.component';
-import { DossierService } from '../dossier.service';
+import {combineLatest, Subscription} from 'rxjs';
+import {DefaultTabs} from '../dossier-detail-tab-enum';
+import {DossierProcessStartModalComponent} from '../dossier-process-start-modal/dossier-process-start-modal.component';
+import {DossierService} from '../dossier.service';
 
 declare var $;
 
@@ -35,7 +36,6 @@ moment.locale(localStorage.getItem('langKey') || '');
   styleUrls: ['./dossier-list.component.css']
 })
 export class DossierListComponent implements OnInit, OnDestroy {
-
   public documentDefinitionName = '';
   public implementationDefinitions: any;
   public showCreateDocument = false;
@@ -60,13 +60,17 @@ export class DossierListComponent implements OnInit, OnDestroy {
 
   private routerSubscription: Subscription;
 
+  private translationSubscription: Subscription;
+
+  initialSortState: SortState;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private documentService: DocumentService,
-    private dossierService: DossierService
-  ) {
-  }
+    private readonly translateService: TranslateService,
+    private readonly dossierService: DossierService
+  ) {}
 
   ngOnInit(): void {
     this.doInit();
@@ -76,6 +80,7 @@ export class DossierListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.routerSubscription.unsubscribe();
+    this.translationSubscription.unsubscribe();
   }
 
   paginationSet() {
@@ -92,34 +97,26 @@ export class DossierListComponent implements OnInit, OnDestroy {
   }
 
   public doInit() {
-    this.documentDefinitionName = this.route.snapshot.paramMap.get('documentDefinitionName') || '';
-    this.implementationDefinitions = this.dossierService.getImplementationEnvironmentDefinitions(this.documentDefinitionName);
+    const documentDefinitionName = this.route.snapshot.paramMap.get('documentDefinitionName') || '';
+    const columns: Array<DefinitionColumn> = this.dossierService.getDefinitionColumns(documentDefinitionName);
 
-    if (this.implementationDefinitions && this.implementationDefinitions.definitions.list.fields) {
-      this.showCreateDocument = this.implementationDefinitions.definitions.list.showCreateDocument;
-      this.fields = this.implementationDefinitions.definitions.list.fields;
-    } else {
-      this.showCreateDocument = false;
-      this.fields = [
-        {
-          key: 'sequence',
-          label: 'Reference number'
-        },
-        {
-          key: 'createdBy',
-          label: 'Created by'
-        },
-        {
-          key: 'createdOn',
-          label: 'Created on',
-          viewType: 'date'
-        },
-        {
-          key: 'modifiedOn',
-          label: 'Last modified',
-          viewType: 'date'
-        }];
-    }
+    this.documentDefinitionName = documentDefinitionName;
+    this.initialSortState = this.dossierService.getInitialSortState(columns);
+
+    this.openTranslationSubscription(columns);
+  }
+
+  private openTranslationSubscription(columns: Array<DefinitionColumn>): void {
+    this.translationSubscription = combineLatest(
+      columns.map(column => this.translateService.stream(`fieldLabels.${column.translationKey}`))
+    ).subscribe(labels => {
+      this.fields = columns.map((column, index) => ({
+        key: column.propertyName,
+        label: labels[index],
+        sortable: column.sortable,
+        ...(column.viewType && {viewType: column.viewType})
+      }));
+    });
   }
 
   public getData() {
@@ -138,8 +135,8 @@ export class DossierListComponent implements OnInit, OnDestroy {
     this.getAllAssociatedProcessDefinitions();
   }
 
-  public doSearch() {
-    const documentSearchRequest = this.buildDocumentSearchRequest();
+  public doSearch(sortState?: SortState) {
+    const documentSearchRequest = this.buildDocumentSearchRequest(sortState);
     this.findDocuments(documentSearchRequest);
   }
 
@@ -153,14 +150,19 @@ export class DossierListComponent implements OnInit, OnDestroy {
   }
 
   public getAllAssociatedProcessDefinitions() {
-    this.documentService.findProcessDocumentDefinitions(this.documentDefinitionName).subscribe(processDocumentDefinitions => {
-      this.processDocumentDefinitions = processDocumentDefinitions
-        .filter(processDocumentDefinition => processDocumentDefinition.canInitializeDocument);
-      this.processDefinitionListFields = [{
-        key: 'processName',
-        label: 'Proces'
-      }];
-    });
+    this.documentService
+      .findProcessDocumentDefinitions(this.documentDefinitionName)
+      .subscribe(processDocumentDefinitions => {
+        this.processDocumentDefinitions = processDocumentDefinitions.filter(
+          processDocumentDefinition => processDocumentDefinition.canInitializeDocument
+        );
+        this.processDefinitionListFields = [
+          {
+            key: 'processName',
+            label: 'Proces'
+          }
+        ];
+      });
   }
 
   public getCachedSearch(): DocumentSearchRequest {
@@ -171,18 +173,20 @@ export class DossierListComponent implements OnInit, OnDestroy {
       this.pagination.size,
       json.sequence,
       json.createdBy,
-      json.searchCriteria
+      json.searchCriteria,
+      json.sort
     );
   }
 
-  private buildDocumentSearchRequest(): DocumentSearchRequest {
+  private buildDocumentSearchRequest(sortState?: SortState): DocumentSearchRequest {
     return new DocumentSearchRequestImpl(
       this.documentDefinitionName,
       this.pagination.page - 1,
       this.pagination.size,
       this.sequence,
       this.createdBy,
-      this.searchCriteria
+      this.searchCriteria,
+      sortState && sortState.isSorting ? sortState : this.initialSortState
     );
   }
 
@@ -240,8 +244,8 @@ export class DossierListComponent implements OnInit, OnDestroy {
 
   private transformDocuments(documentsContent: Array<any>) {
     this.items = documentsContent.map(document => {
-      const { content, ...others } = document;
-      return { ...content, ...others };
+      const {content, ...others} = document;
+      return {...content, ...others};
     });
   }
 
@@ -250,4 +254,15 @@ export class DossierListComponent implements OnInit, OnDestroy {
     this.doSearch();
   }
 
+  public sortChanged(sortState: SortState) {
+    this.doSearch(sortState);
+  }
+
+  public getInitialSortState(): SortState {
+    if (this.hasCachedSearchRequest()) {
+      const cachedRequest = JSON.parse(this.getCachedDocumentSearchRequest());
+      return cachedRequest.sort ? cachedRequest.sort : this.initialSortState;
+    }
+    return this.initialSortState;
+  }
 }

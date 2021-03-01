@@ -18,34 +18,109 @@ import {Injectable} from '@angular/core';
 import {MenuConfig, MenuItem} from '@valtimo/contract';
 import {NGXLogger} from 'ngx-logger';
 import {ConfigService} from '@valtimo/config';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {DocumentService} from '@valtimo/document';
+import {UserProviderService} from '@valtimo/security';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MenuService {
 
-  private menuItems: MenuItem[] = [];
+  private _menuItems$ = new BehaviorSubject<MenuItem[]>(undefined);
   private menuConfig: MenuConfig;
 
   constructor(
-    configService: ConfigService,
+    private configService: ConfigService,
+    private documentService: DocumentService,
+    private userProviderService: UserProviderService,
     private logger: NGXLogger
   ) {
     this.menuConfig = configService.config.menu;
   }
 
   init(): void {
-    this.menuConfig.menuItems.forEach((menuItem: MenuItem) => {
-      menuItem.show = true;
-      this.menuItems.push(menuItem);
-    });
+    this.reload();
     this.logger.debug('Menu initialized');
   }
 
-  getMenuItems(): MenuItem[] {
-    return this.menuItems.sort((a, b) => {
+  public get menuItems$(): Observable<MenuItem[]> {
+    return this._menuItems$.asObservable();
+  }
+
+  public reload(): void {
+    return this._menuItems$.next(this.loadMenuItems());
+  }
+
+  private loadMenuItems(): MenuItem[] {
+    let menuItems: MenuItem[] = [];
+    this.menuConfig.menuItems.forEach((menuItem: MenuItem) => {
+      menuItem.show = true;
+      menuItems.push(menuItem);
+    });
+    menuItems = this.sortMenuItems(menuItems);
+    menuItems = this.appendDossierSubMenuItems(menuItems);
+    menuItems = this.applyMenuRoleSecurity(menuItems);
+    return menuItems;
+  }
+
+  private sortMenuItems(menuItems: MenuItem[]): MenuItem[] {
+    return menuItems.sort((a, b) => {
       return a.sequence - b.sequence;
     });
+  }
+
+  private appendDossierSubMenuItems(menuItems: MenuItem[]): MenuItem[] {
+    this.logger.debug('appendDossierSubMenuItems');
+    this.documentService.getAllDefinitions().subscribe(definitions => {
+      const dossierMenuItems: MenuItem[] = definitions.content
+        .map((definition, index) => ({
+            link: ['/dossiers/' + definition.id.name],
+            title: definition.schema.title,
+            iconClass: 'icon mdi mdi-dot-circle',
+            sequence: index,
+            show: true
+          } as MenuItem)
+        );
+      this.logger.debug('found dossierMenuItems', dossierMenuItems);
+      const menuItemIndex = menuItems.findIndex(({ title }) => title === 'Dossiers');
+      if (menuItemIndex > 0) {
+        const dossierMenu = menuItems[menuItemIndex];
+        this.logger.debug('updating dossierMenu', dossierMenu);
+        dossierMenu.children = dossierMenuItems;
+        menuItems[menuItemIndex] = dossierMenu;
+      }
+      this.logger.debug('appendDossierSubMenuItems finished');
+    });
+    return menuItems;
+  }
+
+  private applyMenuRoleSecurity(menuItems: MenuItem[]): MenuItem[] {
+    this.userProviderService.getUserSubject().subscribe(user => {
+      if (user.roles != null) {
+        this.logger.debug('applyMenuRoleSecurity');
+        const userRoles = user.roles;
+        menuItems.forEach((menuItem: MenuItem) => {
+          const access = this.determineRoleAccess(menuItem, userRoles);
+          this.logger.debug('Menu: check role access', menuItem.roles, access);
+          if (menuItem.show !== access) {
+            this.logger.debug('Menu: Change access', menuItem, access);
+            menuItem.show = access;
+          }
+        });
+      }
+    });
+    return menuItems;
+  }
+
+  private determineRoleAccess(menuItem: MenuItem, roles: string[]): boolean {
+    if (!menuItem.roles) {
+      return true;
+    } else if (menuItem.roles.some(role => roles.includes(role))) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

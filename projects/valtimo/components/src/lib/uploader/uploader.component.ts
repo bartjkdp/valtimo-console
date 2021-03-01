@@ -27,7 +27,7 @@ export class UploaderComponent implements OnInit {
 
   public resources: any = [];
   @Output() resourcesChanged: EventEmitter<any> = new EventEmitter();
-  @Output() resourceRegistered: EventEmitter<any> = new EventEmitter();
+  @Output() resourceRegistered: EventEmitter<S3Resource> = new EventEmitter();
   @Input() showFileList = true;
 
   constructor(

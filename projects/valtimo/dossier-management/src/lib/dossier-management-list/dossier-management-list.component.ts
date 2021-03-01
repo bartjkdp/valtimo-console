@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {DocumentService} from '@valtimo/document';
 import {DocumentDefinition, Page} from '@valtimo/contract';
 import {Router} from '@angular/router';
 import * as moment_ from 'moment';
+import {BehaviorSubject} from 'rxjs';
 
 const moment = moment_;
 moment.locale(localStorage.getItem('langKey') || 'en');
@@ -39,10 +40,17 @@ export class DossierManagementListComponent {
   public pageParam = 0;
   public dossierFields = [
     {key: 'schema.title', label: 'Title'},
-    {key: 'createdOn', label: 'Created On'}
+    {key: 'createdOn', label: 'Created On'},
+    {key: 'readOnly', label: 'Read-only'}
   ];
 
-  constructor(private documentService: DocumentService, private router: Router) {
+  readonly showModal$ = new BehaviorSubject<boolean>(false);
+
+  constructor(
+    private documentService: DocumentService,
+    private router: Router
+  ) {
+
   }
 
   public paginationClicked(page) {
@@ -59,7 +67,8 @@ export class DossierManagementListComponent {
   }
 
   private getDocumentDefinitions() {
-    this.documentService.queryDefinitions({page: this.pageParam, size: this.pagination.size})
+    this.documentService
+      .queryDefinitions({page: this.pageParam, size: this.pagination.size})
       .subscribe((documentDefinitionPage: Page<DocumentDefinition>) => {
         this.pagination.collectionSize = documentDefinitionPage.totalElements;
         this.dossiers = documentDefinitionPage.content;
@@ -67,6 +76,10 @@ export class DossierManagementListComponent {
           dossier.createdOn = moment(dossier.createdOn).format('DD MMM YYYY HH:mm');
         });
       });
+  }
+
+  showModal() {
+    this.showModal$.next(true);
   }
 
 }

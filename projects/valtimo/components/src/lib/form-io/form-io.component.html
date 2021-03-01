@@ -25,6 +25,7 @@
   <formio [form]="formDefinition"
           [refresh]="refreshForm"
           [options]="options"
-          (submit)="onSubmit($event)">
+          (submit)="onSubmit($event)"
+          (ready)="formReady($event)">
   </formio>
 </div>

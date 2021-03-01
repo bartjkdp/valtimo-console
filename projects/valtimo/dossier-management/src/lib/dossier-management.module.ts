@@ -14,26 +14,31 @@
  * limitations under the License.
  */
 
-import {NgModule} from '@angular/core';
-import {DossierManagementListComponent} from './dossier-management-list/dossier-management-list.component';
-import {DossierManagementRoutingModule} from './dossier-management-routing.module';
-import {DossierManagementDetailComponent} from './dossier-management-detail/dossier-management-detail.component';
 import {CommonModule} from '@angular/common';
-import {ListModule, ModalModule, WidgetModule} from '@valtimo/components';
-import {DossierManagementConnectModalComponent} from './dossier-management-connect-modal/dossier-management-connect-modal.component';
+import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {TranslateModule} from '@ngx-translate/core';
+import {DropzoneModule, ListModule, ModalModule, WidgetModule} from '@valtimo/components';
 import {ConfigModule, ExtensionComponent} from '@valtimo/config';
+import {DossierManagementConnectModalComponent} from './dossier-management-connect-modal/dossier-management-connect-modal.component';
+import {DossierManagementDetailComponent} from './dossier-management-detail/dossier-management-detail.component';
+import {DossierManagementListComponent} from './dossier-management-list/dossier-management-list.component';
+import {DossierManagementRoutingModule} from './dossier-management-routing.module';
+import {DossierManagementUploadComponent} from './dossier-management-upload/dossier-management-upload.component';
+import {DossierManagementRemoveModalComponent} from './dossier-management-remove-modal/dossier-management-remove-modal.component';
 
 @NgModule({
   declarations: [
     DossierManagementListComponent,
     DossierManagementDetailComponent,
-    DossierManagementConnectModalComponent
+    DossierManagementConnectModalComponent,
+    DossierManagementRemoveModalComponent,
+    DossierManagementUploadComponent
   ],
   imports: [
     CommonModule,
     WidgetModule,
+    DropzoneModule,
     ListModule,
     DossierManagementRoutingModule,
     FormsModule,

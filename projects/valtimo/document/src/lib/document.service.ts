@@ -33,7 +33,9 @@ import {
   Page,
   ProcessDocumentDefinition,
   ProcessDocumentDefinitionRequest,
-  ProcessDocumentInstance
+  ProcessDocumentInstance,
+  DocumentDefinitionCreateRequest,
+  UndeployDocumentDefinitionResult
 } from '@valtimo/contract';
 import {DocumentSearchRequest} from './document-search-request';
 import {ConfigService} from '@valtimo/config';
@@ -44,10 +46,7 @@ import {ConfigService} from '@valtimo/config';
 export class DocumentService {
   private valtimoEndpointUri: string;
 
-  constructor(
-    private http: HttpClient,
-    configService: ConfigService
-  ) {
+  constructor(private http: HttpClient, configService: ConfigService) {
     this.valtimoEndpointUri = configService.config.valtimoApi.endpointUri;
   }
 
@@ -113,23 +112,26 @@ export class DocumentService {
   }
 
   createProcessDocumentDefinition(request: ProcessDocumentDefinitionRequest): Observable<ProcessDocumentDefinition> {
-    return this.http.post<ProcessDocumentDefinition>(
-      `${this.valtimoEndpointUri}process-document/definition`,
-      request
-    );
+    return this.http.post<ProcessDocumentDefinition>(`${this.valtimoEndpointUri}process-document/definition`, request);
+  }
+
+  createDocumentDefinition(documentDefinitionCreateRequest: DocumentDefinitionCreateRequest): Observable<void> {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.http.post<void>(`${this.valtimoEndpointUri}document-definition`, documentDefinitionCreateRequest, options);
   }
 
   deleteProcessDocumentDefinition(request: ProcessDocumentDefinitionRequest): Observable<any> {
     const options = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       }),
-      body: request,
+      body: request
     };
-    return this.http.delete(
-      `${this.valtimoEndpointUri}process-document/definition`,
-      options
-    );
+    return this.http.delete(`${this.valtimoEndpointUri}process-document/definition`, options);
   }
 
   getAuditLog(documentId: string): Observable<Page<AuditRecord>> {
@@ -143,10 +145,14 @@ export class DocumentService {
   removeResource(documentId: string, resourceId: string): Observable<void> {
     const options = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
+        'Content-Type': 'application/json'
+      })
     };
     return this.http.delete<void>(`${this.valtimoEndpointUri}document/${documentId}/resource/${resourceId}`, options);
+  }
+
+  removeDocumentDefinition(name: string): Observable<UndeployDocumentDefinitionResult> {
+    return this.http.delete<UndeployDocumentDefinitionResult>(`${this.valtimoEndpointUri}document-definition/${name}`);
   }
 
 }

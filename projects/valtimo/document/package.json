@@ -1,6 +1,6 @@
 {
   "name": "@valtimo/document",
-  "version": "2.0.2",
+  "version": "3.2.0",
   "publishConfig": {
     "registry": "http://repo.ritense.com/repository/npm-ritense-private/"
   },

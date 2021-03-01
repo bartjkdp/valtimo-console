@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-export interface Sort {
+export interface SortResult {
   sorted: boolean;
   unsorted: boolean;
 }
 
 export interface Pageable {
-  sort: Sort;
+  sort: SortResult;
   pageSize: number;
   pageNumber: number;
   offset: number;
@@ -35,7 +35,7 @@ export interface Page<T> {
   totalPages: number;
   totalElements: number;
   first: boolean;
-  sort: Sort;
+  sort: SortResult;
   numberOfElements: number;
   size: number;
   number: number;
@@ -58,6 +58,7 @@ export interface DocumentDefinition {
   id: DefinitionId;
   schema: any;
   createdOn: string;
+  readOnly: boolean;
 }
 
 export interface DefinitionId {
@@ -153,16 +154,11 @@ export class ModifyDocumentRequestImpl implements ModifyDocumentRequest {
   content: object;
   versionBasedOn: string;
 
-  constructor(
-    documentId: string,
-    content: object,
-    versionBasedOn: string
-  ) {
+  constructor(documentId: string, content: object, versionBasedOn: string) {
     this.documentId = documentId;
     this.content = content;
     this.versionBasedOn = versionBasedOn;
   }
-
 }
 
 export interface ModifyDocumentAndCompleteTaskRequest<T_MODIFY_DOCUMENT_REQUEST extends ModifyDocumentRequest> {
@@ -170,18 +166,15 @@ export interface ModifyDocumentAndCompleteTaskRequest<T_MODIFY_DOCUMENT_REQUEST 
   request: T_MODIFY_DOCUMENT_REQUEST;
 }
 
-export class ModifyDocumentAndCompleteTaskRequestImpl implements ModifyDocumentAndCompleteTaskRequest<ModifyDocumentRequestImpl> {
+export class ModifyDocumentAndCompleteTaskRequestImpl
+  implements ModifyDocumentAndCompleteTaskRequest<ModifyDocumentRequestImpl> {
   taskId: string;
   request: ModifyDocumentRequestImpl;
 
-  constructor(
-    taskId: string,
-    request: ModifyDocumentRequestImpl
-  ) {
+  constructor(taskId: string, request: ModifyDocumentRequestImpl) {
     this.taskId = taskId;
     this.request = request;
   }
-
 }
 
 export interface NewDocumentRequest {
@@ -193,14 +186,10 @@ export class NewDocumentRequestImpl implements NewDocumentRequest {
   definition: string;
   content: object;
 
-  constructor(
-    definition: string,
-    content: object,
-  ) {
+  constructor(definition: string, content: object) {
     this.definition = definition;
     this.content = content;
   }
-
 }
 
 export interface NewDocumentAndStartProcessRequest<T_NEW_DOCUMENT_REQUEST extends NewDocumentRequest> {
@@ -208,18 +197,15 @@ export interface NewDocumentAndStartProcessRequest<T_NEW_DOCUMENT_REQUEST extend
   request: T_NEW_DOCUMENT_REQUEST;
 }
 
-export class NewDocumentAndStartProcessRequestImpl implements NewDocumentAndStartProcessRequest<NewDocumentRequestImpl> {
+export class NewDocumentAndStartProcessRequestImpl
+  implements NewDocumentAndStartProcessRequest<NewDocumentRequestImpl> {
   processDefinitionKey: string;
   request: NewDocumentRequestImpl;
 
-  constructor(
-    processDefinitionKey: string,
-    request: NewDocumentRequestImpl
-  ) {
+  constructor(processDefinitionKey: string, request: NewDocumentRequestImpl) {
     this.processDefinitionKey = processDefinitionKey;
     this.request = request;
   }
-
 }
 
 export interface ModifyDocumentAndStartProcessRequest<T_MODIFY_DOCUMENT_REQUEST extends ModifyDocumentRequest> {
@@ -227,18 +213,15 @@ export interface ModifyDocumentAndStartProcessRequest<T_MODIFY_DOCUMENT_REQUEST 
   request: T_MODIFY_DOCUMENT_REQUEST;
 }
 
-export class ModifyDocumentAndStartProcessRequestImpl implements ModifyDocumentAndStartProcessRequest<ModifyDocumentRequestImpl> {
+export class ModifyDocumentAndStartProcessRequestImpl
+  implements ModifyDocumentAndStartProcessRequest<ModifyDocumentRequestImpl> {
   processDefinitionKey: string;
   request: ModifyDocumentRequestImpl;
 
-  constructor(
-    processDefinitionKey: string,
-    request: ModifyDocumentRequestImpl
-  ) {
+  constructor(processDefinitionKey: string, request: ModifyDocumentRequestImpl) {
     this.processDefinitionKey = processDefinitionKey;
     this.request = request;
   }
-
 }
 
 export interface ProcessDocumentDefinitionRequest {
@@ -247,3 +230,15 @@ export interface ProcessDocumentDefinitionRequest {
   canInitializeDocument: boolean;
 }
 
+export class DocumentDefinitionCreateRequest {
+  definition: string;
+
+  constructor(definition: string) {
+    this.definition = definition;
+  }
+}
+
+export interface UndeployDocumentDefinitionResult {
+  documentDefinitionName: string;
+  errors: string[];
+}

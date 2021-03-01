@@ -45,7 +45,10 @@ const valtimoKeycloakOptions: ValtimoKeycloakOptions = {
     config: keycloakConfigDev,
     initOptions: keycloakInitOptions,
     enableBearerInterceptor: true,
-    bearerExcludedUrls: ['/assets', 'amazonaws.com/uploads']
+    bearerExcludedUrls: [
+      '/assets',
+      '.*?\.amazonaws.com/'
+    ]
   },
   logoutRedirectUri: 'http://localhost:4200'
 };

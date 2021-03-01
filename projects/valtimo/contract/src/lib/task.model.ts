@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+
+import {User} from './user-management.model';
+
 export interface Task {
   assignee: string;
   caseDefinitionId: string;
@@ -41,10 +44,15 @@ export interface Task {
   formLocation: string;
   businessKey: string;
   processDefinitionKey: string;
+  valtimoAssignee: User;
 }
 
 interface ListItemField {
   key: string;
   value: string;
   label: string;
+}
+
+export interface AssigneeRequest {
+  assignee: string;
 }

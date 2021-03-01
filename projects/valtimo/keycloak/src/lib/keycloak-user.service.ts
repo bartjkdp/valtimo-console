@@ -25,7 +25,6 @@ import {KeycloakOptionsService} from './keycloak-options.service';
   providedIn: 'root'
 })
 export class KeycloakUserService implements UserService {
-
   private userIdentity: ReplaySubject<UserIdentity>;
 
   constructor(
@@ -69,4 +68,8 @@ export class KeycloakUserService implements UserService {
     return this.keycloakService.getToken();
   }
 
+  async updateToken(minValidity: number): Promise<boolean> {
+    this.logger.debug('KeycloakUserService: updateToken');
+    return this.keycloakService.updateToken(minValidity);
+  }
 }

@@ -106,3 +106,5 @@ window.Buffer = window.Buffer || require('buffer').Buffer;
 // Could be removed once Swagger-UI fixed this issue
 // https://stackoverflow.com/q/58454435/479156
 (window as any).process = {browser: true};
+
+import '@webcomponents/custom-elements/custom-elements.min';
